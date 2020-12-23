@@ -1,0 +1,39 @@
+﻿{
+    "ShipInfo": [
+        {
+            "Name": "Standard Ship",
+            "InitialLives": 3,
+            "ClassName": "StandardShip",
+            "UltimateDescription": "It's shoot speed doubles as well as it's damage.",
+            "Unlocked": true
+        },
+        {
+            "Name": "Grenadier Ship",
+            "InitialLives": 3,
+            "ClassName": "GrenadierShip",
+            "UltimateDescription": "Destroys all enemies around you.",
+            "Unlocked": false
+        },
+        {
+            "Name": "Tank Ship",
+            "InitialLives": 3,
+            "ClassName": "TankShip",
+            "UltimateDescription": "Shield that gives him 3 extra lives.",
+            "Unlocked": false
+        }
+    ],
+    "DifficultyInfo": [
+        {
+            "Name": "Easy",
+            "Description": "Gugu gaga"
+        },
+        {
+            "Name": "Medium",
+            "Description": "I wanna be a real boy!"
+        },
+        {
+            "Name": "Hard",
+            "Description": "Rip and tear"
+        }
+    ]
+}

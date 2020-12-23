@@ -1,0 +1,16 @@
+{
+    "name": "GameEntities",
+    "references": [
+        "GUID:bf2e87b04569a4c0a9633785b61043c4",
+        "GUID:a2160bc5a9f02439080c3e61e4b70595"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

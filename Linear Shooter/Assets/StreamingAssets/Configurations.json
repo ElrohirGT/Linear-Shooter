@@ -1,0 +1,268 @@
+﻿{
+    "Medals": {
+        "MinLifeDuration": 5,
+        "MaxLifeDuration": 15
+    },
+    "Waves": {
+        "EasyWaves": {
+            "EasyEnemies": {
+                "Pattern": [ 2, 3, 1 ],
+                "GrowthValue": 0.5,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "MediumEnemies": {
+                "Pattern": [ 1, 2, 1 ],
+                "GrowthValue": 0.5,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 0
+                    },
+                    {
+                        "WaveNumber": 2,
+                        "QuantityToSpawn": 0
+                    }
+                ]
+            },
+            "HardEnemies": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0.5,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "Boss": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            }
+        },
+        "MediumWaves": {
+            "EasyEnemies": {
+                "Pattern": [ 3, 4 ],
+                "GrowthValue": 0.8,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "MediumEnemies": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 1,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "HardEnemies": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0.5,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "Boss": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            }
+        },
+        "HardWaves": {
+            "EasyEnemies": {
+                "Pattern": [ 4, 5 ],
+                "GrowthValue": 1.5,
+                "CheckPoints": []
+            },
+            "MediumEnemies": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0.5,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "HardEnemies": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0.5,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            },
+            "Boss": {
+                "Pattern": [ 2, 3 ],
+                "GrowthValue": 0,
+                "CheckPoints": [
+                    {
+                        "WaveNumber": 1,
+                        "QuantityToSpawn": 1
+                    }
+                ]
+            }
+        }
+    },
+    "Spawners": {
+        "MedalSpawner": {
+            "InitialDelay": 1,
+            "MinSpawnDelay": 4.0,
+            "MaxSpawnDelay": 10.0
+        },
+        "PowerUpSpawner": {
+            "InitialDelay": 5,
+            "MinSpawnDelay": 6.0,
+            "MaxSpawnDelay": 12.0,
+            "Probabilities": {
+                "ExtraLifePowerUp": 0.5,
+                "FreezerPowerUp": 0.7
+            }
+        },
+        "EasyEnemiesSpawner": {
+            "SpawnCooldownDuration": 0.5,
+            "WaveCooldownDuration": 2.5,
+            "Probabilities": {
+                "BasicEnemy": 0.7,
+                "KamikazeEnemy": 0.3
+            }
+        },
+        "MediumEnemiesSpawner": {
+            "SpawnCooldownDuration": 0.5,
+            "WaveCooldownDuration": 2.5,
+            "Probabilities": {
+                "BasicShooterEnemy": 1
+            }
+        }
+    },
+    "GameEntities": {
+        "Ships": {
+            "StandardShip": {
+                "MinMedalsToUltimate": 5,
+                "MaxHitpoints": 3,
+                "InitialHitpoints": 3,
+                "BaseDamage": 1,
+                "RotationSpeed": 300.0,
+                "ThrustAmount": 5.0,
+                "DamageCooldownDuration": 1.5,
+                "UltimateDuration": 10,
+                "Guns": {
+                    "PlayerLaserBullet": {
+                        "ShootCooldownDuration": 0.2,
+                        "BulletInitialImpulseMagnitude": 22.0
+                    }
+                }
+            },
+            "GrenadierShip": {
+                "MinMedalsToUltimate": 5,
+                "MaxHitpoints": 3,
+                "InitialHitpoints": 3,
+                "BaseDamage": 1,
+                "RotationSpeed": 180.0,
+                "ThrustAmount": 5.0,
+                "ShootCooldownDuration": 0.5,
+                "BulletInitialImpulseMagnitude": 22.0,
+                "DamageCooldownDuration": 0.5,
+                "Guns": {}
+            },
+            "TankShip": {
+                "MinMedalsToUltimate": 5,
+                "MaxHitpoints": 5,
+                "InitialHitpoints": 5,
+                "BaseDamage": 1,
+                "RotationSpeed": 300.0,
+                "ThrustAmount": 4.0,
+                "ShootCooldownDuration": 0.5,
+                "BulletInitialImpulseMagnitude": 22.0,
+                "DamageCooldownDuration": 0.5,
+                "Guns": {}
+            }
+        },
+        "PowerUps": {
+            "ExtraLifePowerUp": {
+                "LifeDuration": 3.5
+            },
+            "FreezerPowerUp": {
+                "LifeDuration": 3.25,
+                "EffectDuration": 6
+            }
+        },
+        "Bullets": {
+            "LaserBullet": {
+                "BulletDamage": 1,
+                "BulletLifeDuration": 2.0
+            }
+        },
+        "Enemies": {
+            "EasyEnemies": {
+                "BasicEnemy": {
+                    "DamageCooldownDuration": 0.01,
+                    "MaxHitpoints": 2,
+                    "InitialHitpoints": 2,
+                    "BaseDamage": 1,
+                    "PointsWorth": 100,
+                    "RotationSpeed": 120.0,
+                    "RotationCooldown": 0.5,
+                    "ThrustAmount": 3.0,
+                    "Guns": {}
+                },
+                "KamikazeEnemy": {
+                    "LifeDuration": 3,
+                    "DamageCooldownDuration": 0.01,
+                    "MaxHitpoints": 1,
+                    "InitialHitpoints": 1,
+                    "BaseDamage": 1,
+                    "PointsWorth": 150,
+                    "RotationSpeed": 360.0,
+                    "RotationCooldown": 0.2,
+                    "ThrustAmount": 7.0,
+                    "Guns": {}
+                }
+            },
+            "MediumEnemies": {
+                "BasicShooterEnemy": {
+                    "DamageCooldownDuration": 0.01,
+                    "MaxHitpoints": 3,
+                    "InitialHitpoints": 3,
+                    "BaseDamage": 1,
+                    "PointsWorth": 200,
+                    "RotationSpeed": 120.0,
+                    "RotationCooldown": 0.1,
+                    "ThrustAmount": 1.5,
+                    "Guns": {
+                        "EnemyLaserBullet": {
+                            "ShootCooldownDuration": 2,
+                            "BulletInitialImpulseMagnitude": 6.6
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

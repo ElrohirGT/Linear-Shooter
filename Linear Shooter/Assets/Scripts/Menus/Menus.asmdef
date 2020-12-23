@@ -1,0 +1,15 @@
+{
+    "name": "Menus",
+    "references": [
+        "GUID:bf2e87b04569a4c0a9633785b61043c4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
