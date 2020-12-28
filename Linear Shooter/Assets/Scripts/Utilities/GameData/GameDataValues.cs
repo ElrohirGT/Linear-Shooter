@@ -5,6 +5,22 @@ using Newtonsoft.Json;
 
 namespace Utilities.GameData
 {
+    public class PlayerInfo
+    {
+        [JsonConstructor]
+        public PlayerInfo(float highscore)
+        {
+            Highscore = highscore;
+        }
+
+        [JsonProperty("Highscore")]
+        public float Highscore { get; private set; }
+
+        public void ChangeHighscore(float newHighscore)
+        {
+            Highscore = newHighscore;
+        }
+    }
     public class DifficultyInfo
     {
         [JsonProperty("Name")]
@@ -22,10 +38,7 @@ namespace Utilities.GameData
     public class ShipInfo
     {
         [JsonProperty("Name")]
-        public string Name { get; }
-
-        [JsonProperty("ClassName")]
-        public string ClassName { get; }
+        public string DisplayName { get; }
 
         [JsonProperty("InitialLives")]
         public int InitialLives { get; }
@@ -34,32 +47,41 @@ namespace Utilities.GameData
         public string UltimateDescription { get; }
 
         [JsonProperty("Unlocked")]
-        public bool Unlocked { get; }
+        public bool Unlocked { get; private set; }
+
+        [JsonProperty("ToUnlock")]
+        public string ToUnlockMessage { get; }
 
         [JsonConstructor]
-        public ShipInfo(string name, string className, int initialLives, string ultimateDescription, bool unlocked)
+        public ShipInfo(string displayName, int initialLives, string ultimateDescription, bool unlocked, string toUnlockMessage)
         {
-            Name = name;
-            ClassName = className;
+            DisplayName = displayName;
             InitialLives = initialLives;
             UltimateDescription = ultimateDescription;
             Unlocked = unlocked;
+            ToUnlockMessage = toUnlockMessage;
         }
+
+        public void Unlock() { Unlocked = true; }
     }
 
     public class GameDataValues
     {
-        [JsonProperty("ShipInfo")]
-        public ShipInfo[] ShipsInfo { get; }
+        [JsonProperty("PlayerShips")]
+        public Dictionary<string, ShipInfo> ShipsInfo { get; }
 
-        [JsonProperty("DifficultyInfo")]
+        [JsonProperty("Difficulties")]
         public DifficultyInfo[] DifficultiesInfo { get; }
 
+        [JsonProperty("Player")]
+        public PlayerInfo PlayerInfo { get; }
+
         [JsonConstructor]
-        public GameDataValues(ShipInfo[] shipsInfo, DifficultyInfo[] difficultiesInfo)
+        public GameDataValues(PlayerInfo playerInfo, Dictionary<string, ShipInfo> shipsInfo, DifficultyInfo[] difficultiesInfo)
         {
             ShipsInfo = shipsInfo;
             DifficultiesInfo = difficultiesInfo;
+            PlayerInfo = playerInfo;
         }
     }
 }

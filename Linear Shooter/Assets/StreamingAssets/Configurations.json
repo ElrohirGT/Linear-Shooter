@@ -149,8 +149,8 @@
             "SpawnCooldownDuration": 0.5,
             "WaveCooldownDuration": 2.5,
             "Probabilities": {
-                "BasicEnemy": 0.7,
-                "KamikazeEnemy": 0.3
+                "BasicEnemy": 0.6,
+                "KamikazeEnemy": 0.4
             }
         },
         "MediumEnemiesSpawner": {
@@ -172,6 +172,7 @@
                 "ThrustAmount": 5.0,
                 "DamageCooldownDuration": 1.5,
                 "UltimateDuration": 10,
+                "MinScoreToUnlock": 0,
                 "Guns": {
                     "PlayerLaserBullet": {
                         "ShootCooldownDuration": 0.2,
@@ -189,19 +190,27 @@
                 "ShootCooldownDuration": 0.5,
                 "BulletInitialImpulseMagnitude": 22.0,
                 "DamageCooldownDuration": 0.5,
+                "MinScoreToUnlock": 5000,
                 "Guns": {}
             },
             "TankShip": {
                 "MinMedalsToUltimate": 5,
-                "MaxHitpoints": 5,
-                "InitialHitpoints": 5,
+                "MaxHitpoints": 4,
+                "InitialHitpoints": 4,
                 "BaseDamage": 1,
-                "RotationSpeed": 300.0,
+                "RotationSpeed": 260.0,
                 "ThrustAmount": 4.0,
-                "ShootCooldownDuration": 0.5,
-                "BulletInitialImpulseMagnitude": 22.0,
-                "DamageCooldownDuration": 0.5,
-                "Guns": {}
+                "DamageCooldownDuration": 1.5,
+                "UltimateDuration": 10,
+                "MinScoreToUnlock": 2000,
+                "RotationScaleFactor": 1.50,
+                "ThrustScaleFactor": 2.5,
+                "Guns": {
+                    "PlayerHeavyLaserBullet": {
+                        "ShootCooldownDuration": 0.6,
+                        "BulletInitialImpulseMagnitude": 22
+                    }
+                }
             }
         },
         "PowerUps": {
@@ -216,6 +225,10 @@
         "Bullets": {
             "LaserBullet": {
                 "BulletDamage": 1,
+                "BulletLifeDuration": 2.0
+            },
+            "HeavyLaserBullet": {
+                "BulletDamage": 2,
                 "BulletLifeDuration": 2.0
             }
         },

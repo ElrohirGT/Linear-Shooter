@@ -1,15 +1,15 @@
 ﻿namespace GameEntities.Ships.Motors
 {
-    public struct ShipMotorSettings
+    public class ShipMotorSettings
     {
         /// <summary>
         /// Get's the rotation speed of this ship.
         /// </summary>
-        public float RotationSpeed { get; }
+        public float RotationSpeed { get; private set; }
         /// <summary>
         /// Get's the thrust amount of this ship.
         /// </summary>
-        public float ThrustAmount { get; }
+        public float ThrustAmount { get; private set; }
 
         /// <summary>
         /// It's in charge of the configuration of a ship,
@@ -21,6 +21,12 @@
         {
             RotationSpeed = rotationSpeed;
             ThrustAmount = thrustAmount;
+        }
+
+        public void ScaleSettings(float rotationSpeedScaleFactor, float thrustAmountScaleFactor)
+        {
+            RotationSpeed *= rotationSpeedScaleFactor;
+            ThrustAmount *= thrustAmountScaleFactor;
         }
     }
 }

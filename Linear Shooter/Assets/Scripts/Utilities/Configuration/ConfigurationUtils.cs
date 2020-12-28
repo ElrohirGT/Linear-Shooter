@@ -83,10 +83,11 @@ namespace Utilities.Configuration
         #endregion
 
         #region PlayerShips Config
-        /// <summary>
-        /// Get's the ships the player controls configuration.
-        /// </summary>
-        public static PlayerShipsConfig PlayerShipsConfig => _configurationValues.GameEntities.PlayerShips;
+        public static Dictionary<string, PlayerShipConfig> PlayerShips => _configurationValues.GameEntities.PlayerShips.ToDictionary();
+
+        public static StandardShipConfig StandardShipConfig => _configurationValues.GameEntities.PlayerShips.StandardShip;
+
+        public static TankShipConfig TankShipConfig => _configurationValues.GameEntities.PlayerShips.TankShip;
         #endregion
 
         #region PowerUps Config
@@ -96,6 +97,7 @@ namespace Utilities.Configuration
 
         #region Bullets Config
         public static LaserBulletConfig LaserBulletConfig => _configurationValues.GameEntities.Bullets.LaserBullet;
+        public static LaserBulletConfig HeavyLaserBulletConfig => _configurationValues.GameEntities.Bullets.HeavyLaserBullet;
         #endregion
 
         #region Easy Enemies Config

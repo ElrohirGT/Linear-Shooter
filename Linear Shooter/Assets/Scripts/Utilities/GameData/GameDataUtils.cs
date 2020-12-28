@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -48,15 +48,20 @@ namespace Utilities.GameData
         .##......##..##...####...##......######..##..##....##....######..######...####..
         ................................................................................
         */
+
+        static string FilePath => Path.Combine(Application.streamingAssetsPath, _FILE_NAME);
+
         /// <summary>
         /// Get's the information of the ships.
         /// </summary>
-        public static ShipInfo[] ShipsInfo => _gameDataValues.ShipsInfo;
+        public static Dictionary<string, ShipInfo> ShipsInfo => _gameDataValues.ShipsInfo;
 
         /// <summary>
         /// Get's the information of the difficulties in the game.
         /// </summary>
         public static DifficultyInfo[] DifficultiesInfo => _gameDataValues.DifficultiesInfo;
+
+        public static PlayerInfo PlayerInfo => _gameDataValues.PlayerInfo;
 
         public static void Initialize()
         {
@@ -92,6 +97,19 @@ namespace Utilities.GameData
         }
 
         /// <summary>
+        /// Saves the current state of the game data to the file.
+        /// </summary>
+        public static void Save()
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(_gameDataValues);
+                File.WriteAllText(FilePath, json);
+            }
+            catch (Exception) { };
+        }
+
+        /// <summary>
         /// Parses the file that has the GameData.
         /// </summary>
         /// <returns>An instance of GameDataValues</returns>
@@ -101,7 +119,7 @@ namespace Utilities.GameData
             try
             {
                 return JsonConvert.DeserializeObject<GameDataValues>
-                    (File.ReadAllText(Path.Combine(Application.streamingAssetsPath, _FILE_NAME)));
+                    (File.ReadAllText(FilePath));
             }
             catch (Exception) { throw; }
         }

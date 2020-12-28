@@ -85,12 +85,14 @@ namespace Utilities.Configuration
     public partial class BulletsConfig
     {
         [JsonConstructor]
-        public BulletsConfig(LaserBulletConfig laserBullet)
+        public BulletsConfig(LaserBulletConfig laserBullet, LaserBulletConfig heavyLaserBullet)
         {
             LaserBullet = laserBullet;
+            HeavyLaserBullet = heavyLaserBullet;
         }
 
         [J("LaserBullet", Required = R.Always)] public LaserBulletConfig LaserBullet { get; }
+        [J("HeavyLaserBullet", Required = R.Always)] public LaserBulletConfig HeavyLaserBullet { get; }
     }
     public partial class LaserBulletConfig
     {

@@ -150,7 +150,7 @@ namespace GameEntities
         /// </summary>
         protected void OnEntityTookDamage(float damageTaken)
         {
-            if (!_canReceiveDamage)
+            if (!CanReceiveDamage)
                 return;
 
             _canReceiveDamage = false;
@@ -178,6 +178,10 @@ namespace GameEntities
         /// </summary>
         void OnEntityDied() => EntityDied?.Invoke();
         #endregion
+
+        protected void MakeInvincible() => _canReceiveDamage = false;
+
+        protected void MakeVincible() => _canReceiveDamage = true;
 
         /// <summary>
         /// Reduces the hitpoints of the Entity by the specified damage.

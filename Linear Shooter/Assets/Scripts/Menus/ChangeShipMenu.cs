@@ -36,7 +36,7 @@ public class ChangeShipMenu : MonoBehaviour
     [SerializeField]
     List<Sprite> _shipsLockedDisplaySprites;
 
-    ShipInfo[] _shipsInfo;
+    string[] _shipsInfoDictionaryKeys;
     int _currentShipIndex = 0;
     int _maxListIndex;
 
@@ -50,7 +50,7 @@ public class ChangeShipMenu : MonoBehaviour
     .##......##..##...####...##......######..##..##....##....######..######...####..
     ................................................................................
     */
-    ShipInfo _CurrentShip => _shipsInfo[_currentShipIndex];
+    ShipInfo _CurrentShip => GameDataUtils.ShipsInfo[_shipsInfoDictionaryKeys[_currentShipIndex]];
     bool _IsCurrentShipUnlocked => _CurrentShip.Unlocked;
     Sprite _CurrentSprite
     {
@@ -88,9 +88,11 @@ public class ChangeShipMenu : MonoBehaviour
     }
     void Start()
     {
-        _shipsInfo = GameDataUtils.ShipsInfo;
-        _maxListIndex = _shipsInfo.Length - 1;
 
+        _shipsInfoDictionaryKeys = new string[GameDataUtils.ShipsInfo.Count];
+        GameDataUtils.ShipsInfo.Keys.CopyTo(_shipsInfoDictionaryKeys, 0);
+
+        _maxListIndex = _shipsInfoDictionaryKeys.Length - 1;
         RefreshUI();
     }
     #endregion
@@ -114,7 +116,7 @@ public class ChangeShipMenu : MonoBehaviour
     {
         if (_IsCurrentShipUnlocked)
         {
-            PlayerPrefs.SetString(PlayerPrefsConstants.SELECTED_SHIP, _CurrentShip.ClassName);
+            PlayerPrefs.SetString(PlayerPrefsConstants.SELECTED_SHIP, _shipsInfoDictionaryKeys[_currentShipIndex]);
             MenuManager.ExitMenuAndLoadScene("MainGame");
             return;
         }
@@ -133,6 +135,7 @@ public class ChangeShipMenu : MonoBehaviour
     void RefreshUI()
     {
         _shipDisplayComponent.sprite = _CurrentSprite;
+        _shipDisplayComponent.sprite.texture.filterMode = FilterMode.Point;
         _shipDescriptionComponent.text = GenerateCurrentShipInfoDisplay();
     }
 
@@ -143,7 +146,7 @@ public class ChangeShipMenu : MonoBehaviour
     string GenerateCurrentShipInfoDisplay()
     {
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine($"Name: {_CurrentShip.Name}");
+        sb.AppendLine($"Name: {_CurrentShip.DisplayName}");
         if (_CurrentShip.Unlocked)
         {
             sb.AppendLine($"Initial Lives: {_CurrentShip.InitialLives}");
@@ -153,6 +156,7 @@ public class ChangeShipMenu : MonoBehaviour
         {
             sb.AppendLine($"Initial Lives: ---");
             sb.AppendLine($"Ultimate Description: {new string('-', 8)}");
+            sb.AppendLine($"To Unlock: {_CurrentShip.ToUnlockMessage}");
         }
 
         return sb.ToString();

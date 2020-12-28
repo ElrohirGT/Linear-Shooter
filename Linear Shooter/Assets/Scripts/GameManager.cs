@@ -125,18 +125,24 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void HandlePlayerDies(PlayerDiedEventInfo e)
     {
-        float highscore = float.MinValue;
-
         PlayerPrefs.SetFloat(PlayerPrefsConstants.PLAYER_LAST_SCORE, e.Score);
 
-        if (PlayerPrefs.HasKey(PlayerPrefsConstants.PLAYER_HIGHSCORE))
-            highscore = PlayerPrefs.GetFloat(PlayerPrefsConstants.PLAYER_HIGHSCORE);
-
+        float highscore = GameDataUtils.PlayerInfo.Highscore;
         if (highscore < e.Score)
+            GameDataUtils.PlayerInfo.ChangeHighscore(e.Score);
+
+        foreach (var playerShipConfig in ConfigurationUtils.PlayerShips)
         {
-            PlayerPrefs.SetFloat(PlayerPrefsConstants.PLAYER_HIGHSCORE, e.Score);
-            PlayerPrefs.Save();
+            if (!playerShipConfig.Value.Condition())
+                continue;
+            if (!GameDataUtils.ShipsInfo.TryGetValue(playerShipConfig.Key, out _))
+                continue;
+
+            GameDataUtils.ShipsInfo[playerShipConfig.Key].Unlock();
         }
+
+        GameDataUtils.Save();
+
         MenuManager.GoToMenu(Menus.GameOverMenu);
     }
 

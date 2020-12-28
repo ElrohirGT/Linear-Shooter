@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Events;
 using GameEntities.Bullets;
 using GameEntities.Ships.Guns;
 using GameEntities.Ships.Motors;
@@ -10,7 +12,9 @@ namespace GameEntities.Ships.PlayerShips
 {
     public class StandardShip : PlayerShip
     {
-        SpriteRenderer _spriteRenderer;
+        const string IDLE_ANIMATION_NAME = "StandardShip_IDLE";
+        const string ULTIMATE_ANIMATION_PREFIX = "StandardShip_Ultimate";
+        const string REVERSE_TO_IDLE_ANIMATION_NAME = "StandardShip_ReverseToIDLE";
 
         Timer _ultimateTimer;
         float _ultimateDuration;
@@ -20,25 +24,25 @@ namespace GameEntities.Ships.PlayerShips
         protected override (float maxHitpoints, float currentHitpoints, float baseDamage, float damageCooldownDuration) GetInitializationValues()
         {
             return (
-                ConfigurationUtils.PlayerShipsConfig.StandardShip.InitialHitpoints,
-                ConfigurationUtils.PlayerShipsConfig.StandardShip.InitialHitpoints,
-                ConfigurationUtils.PlayerShipsConfig.StandardShip.BaseDamage,
-                ConfigurationUtils.PlayerShipsConfig.StandardShip.DamageCooldownDuration
+                ConfigurationUtils.StandardShipConfig.InitialHitpoints,
+                ConfigurationUtils.StandardShipConfig.InitialHitpoints,
+                ConfigurationUtils.StandardShipConfig.BaseDamage,
+                ConfigurationUtils.StandardShipConfig.DamageCooldownDuration
             );
         }
 
-        protected override int GetMinMendalsToUltimate() => ConfigurationUtils.PlayerShipsConfig.StandardShip.MinMedalsToUltimate;
+        protected override int GetMinMendalsToUltimate() => ConfigurationUtils.StandardShipConfig.MinMedalsToUltimate;
 
         protected override IShipGun<Bullet> CreateShipGun() => _shipGun = gameObject.AddComponent<PlayerLaserBulletGun>();
 
         protected override ShipMotorSettings CreateMotorSettings() => new ShipMotorSettings(
-                ConfigurationUtils.PlayerShipsConfig.StandardShip.RotationSpeed,
-                ConfigurationUtils.PlayerShipsConfig.StandardShip.ThrustAmount
+                ConfigurationUtils.StandardShipConfig.RotationSpeed,
+                ConfigurationUtils.StandardShipConfig.ThrustAmount
             );
 
         protected override ShipGunSettings CreateShipGunSettings()
         {
-            Dictionary<string, GunConfig> gunsConfig = ConfigurationUtils.PlayerShipsConfig.StandardShip.Guns;
+            Dictionary<string, GunConfig> gunsConfig = ConfigurationUtils.StandardShipConfig.Guns;
 
             foreach (var gunConfig in gunsConfig)
                 if (gunConfig.Key.Equals(_shipGun.BulletTypeName))
@@ -54,9 +58,15 @@ namespace GameEntities.Ships.PlayerShips
         {
             _ultimateTimer = gameObject.AddComponent<Timer>();
             _ultimateTimer.Finished += HandleUltimateTimerFinished;
-            _ultimateDuration = ConfigurationUtils.PlayerShipsConfig.StandardShip.UltimateDuration;
+            _ultimateDuration = ConfigurationUtils.StandardShipConfig.UltimateDuration;
 
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            ShipCollectedMedal += HandleShipCollectedMedal;
+        }
+
+        void HandleShipCollectedMedal(PlayerPickedUpMedalEventInfo obj)
+        {
+            if (obj.PickedUpMedalsCount <= MinMedalsToUltimate)
+                Animator.Play($"{ULTIMATE_ANIMATION_PREFIX}{obj.PickedUpMedalsCount}");
         }
 
         /// <summary>
@@ -64,7 +74,7 @@ namespace GameEntities.Ships.PlayerShips
         /// </summary>
         protected override void ShootUltimate()
         {
-            _spriteRenderer.color = new Color32(255, 215, 0, 255);
+            Animator.Play(REVERSE_TO_IDLE_ANIMATION_NAME);
 
             _shipGun.SetDamageMultiplier(2);
             shipGunSettings.ShootCooldownDuration /= 2;
@@ -73,12 +83,14 @@ namespace GameEntities.Ships.PlayerShips
         }
 
         //Reset entity to previous state.
-        private void HandleUltimateTimerFinished()
+        void HandleUltimateTimerFinished()
         {
             _shipGun.SetDamageMultiplier(1);
-            shipGunSettings.ShootCooldownDuration = ConfigurationUtils.PlayerShipsConfig.StandardShip.Guns[_shipGun.BulletTypeName].ShootCooldownDuration;
+            shipGunSettings.ShootCooldownDuration = ConfigurationUtils.StandardShipConfig.Guns[_shipGun.BulletTypeName].ShootCooldownDuration;
 
-            _spriteRenderer.color = Color.white;
+            if (Animator.GetCurrentAnimatorStateInfo(0).IsName(REVERSE_TO_IDLE_ANIMATION_NAME))
+                Animator.Play(IDLE_ANIMATION_NAME);
+
             OnUltimateEnded();
         }
     }

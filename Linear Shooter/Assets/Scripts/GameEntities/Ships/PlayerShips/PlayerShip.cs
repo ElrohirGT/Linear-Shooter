@@ -32,43 +32,23 @@ namespace GameEntities.Ships.PlayerShips
         #endregion
 
         #region Ship Ultimate Support
-        /// <summary>
-        /// Keepd track of the medals that the player has collected in his run.
-        /// </summary>
         int _medalsCollected = 0;
-        /// <summary>
-        /// Defines the minimum amount of medals to be able to shoot the Ultimate of this ship.
-        /// </summary>
         int _minMedalsToUltimate;
-        /// <summary>
-        /// Get's wether the ship can shoot it's ultimate.
-        /// </summary>
         bool _canShootUltimate = false;
         #endregion
 
         #region Ship Gun
-        /// <summary>
-        /// The ship gun input the gun of this ship will use,
-        /// all players ships use the same class for their input.
-        /// </summary>
         readonly IShipGunInput _shipGunInput = new PlayerShipGunInput();
-        /// <summary>
-        /// Manages the states of the ship's gun.
-        /// </summary>
         StateMachine _shipGunStateMachine;
-        /// <summary>
-        /// The settings of the ship gun.
-        /// </summary>
         protected ShipGunSettings shipGunSettings;
-        /// <summary>
-        /// The ship gun.
-        /// </summary>
         IShipGun<Bullet> _shipGun;
         #endregion
 
         public int MinMedalsToUltimate => _minMedalsToUltimate;
 
         protected IShipGunInput ShipGunInput => _shipGunInput;
+
+        protected Animator Animator { get; private set; }
 
         public event Action ShipCanShootUltimate;
         public event Action ShipShootingUltimate;
@@ -88,6 +68,7 @@ namespace GameEntities.Ships.PlayerShips
         {
             base.Awake();
             InitializePlayerShip();
+            Animator = GetComponent<Animator>();
             ExtraLifePowerUp.PickedUp += HandleExtraLifePowerUpPickedUp;
         }
         protected override void FixedUpdate()
@@ -104,7 +85,7 @@ namespace GameEntities.Ships.PlayerShips
             _medalsCollected = 0;
             ShootUltimate();
         }
-        void OnTriggerEnter2D(Collider2D other)
+        protected void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag(TagsConstants.ENEMY_BULLET))
             {
@@ -133,10 +114,7 @@ namespace GameEntities.Ships.PlayerShips
                 ShipCanShootUltimate?.Invoke();
             }
         }
-        void OnDestroy()
-        {
-            ExtraLifePowerUp.PickedUp -= HandleExtraLifePowerUpPickedUp;
-        }
+        void OnDestroy() => ExtraLifePowerUp.PickedUp -= HandleExtraLifePowerUpPickedUp;
         #endregion
 
         #region Configuration

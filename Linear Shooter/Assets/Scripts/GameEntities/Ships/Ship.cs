@@ -34,6 +34,8 @@ namespace GameEntities.Ships
         /// </summary>
         protected StateMachine ShipMotorStateMachine => _shipMotorStateMachine;
 
+        protected ShipMotorSettings ShipMotorSettings => _shipMotorSettings;
+
         /// <summary>
         /// Get's this ship's motor's input.
         /// </summary>

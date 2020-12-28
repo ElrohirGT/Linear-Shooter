@@ -2,11 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Events;
 using GameEntities.Ships.Enemies;
-using Utilities.Constants;
 using Utilities;
 using System.Collections;
-using System;
 using GameEntities.PowerUps;
+using Utilities.GameData;
 
 /// <summary>
 /// Controls the UI displays in the scene.
@@ -109,7 +108,7 @@ public class HUD : MonoBehaviour
 
         FreezerPowerUp.PickedUp += HandleFreezerPowerUpPickedUp;
 
-        _currentHighScore = PlayerPrefs.GetFloat(PlayerPrefsConstants.PLAYER_HIGHSCORE);
+        _currentHighScore = GameDataUtils.PlayerInfo.Highscore;
         _currentLives = Player.RemainingLives;
         _maxMedalCount = Player.MedalsForUltimate;
 

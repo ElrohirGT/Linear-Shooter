@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Constants;
+using Utilities.GameData;
 using Utilities.MenuSystem;
 
 public class GameOverMenu : MonoBehaviour
@@ -17,7 +18,7 @@ public class GameOverMenu : MonoBehaviour
     private void Awake()
     {
         float score = PlayerPrefs.GetFloat(PlayerPrefsConstants.PLAYER_LAST_SCORE);
-        float highscore = PlayerPrefs.GetFloat(PlayerPrefsConstants.PLAYER_HIGHSCORE);
+        float highscore = GameDataUtils.PlayerInfo.Highscore;
         MenuManager.Initialize();
         _scoreDisplay.text = score.ToString("n0");
 

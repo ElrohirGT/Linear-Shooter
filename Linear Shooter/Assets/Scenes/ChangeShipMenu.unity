@@ -246,13 +246,13 @@ MonoBehaviour:
   _goBackButton: {fileID: 312963505}
   _shipDisplayComponent: {fileID: 859768449}
   _shipsUnlockedDisplaySprites:
-  - {fileID: 21300000, guid: 8e0414b293acb4ba1aa1cd62f08f973e, type: 3}
+  - {fileID: 21300000, guid: 9c4b1ac16997f400d81e68ddb4ffade8, type: 3}
+  - {fileID: 21300000, guid: 3cc3d727abfe34f72a2eab76c71161e5, type: 3}
   - {fileID: 21300000, guid: fcfe83ad8050143dba26eefe3c662cc6, type: 3}
-  - {fileID: 21300000, guid: d882ab554176a40abaedaa57845946e2, type: 3}
   _shipsLockedDisplaySprites:
   - {fileID: 21300000, guid: 6a03d2489670d42a8abd2aecdae4237c, type: 3}
-  - {fileID: 21300000, guid: 3b99b1e0e85b94ae480f7013bbecc8b9, type: 3}
   - {fileID: 21300000, guid: 26107a543bd494d3a9e61c4220919438, type: 3}
+  - {fileID: 21300000, guid: 3b99b1e0e85b94ae480f7013bbecc8b9, type: 3}
 --- !u!1 &253320168
 GameObject:
   m_ObjectHideFlags: 0
