@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#define UNITY_ANDROID
+#define UNITY_IOS
+#define UNITY_64
+
+using UnityEngine;
 using GameEntities.Bullets;
 using Utilities.Constants;
 using GameEntities.Ships.Motors.Inputs;
@@ -38,6 +42,7 @@ namespace GameEntities.Ships.PlayerShips
         #endregion
 
         #region Ship Gun
+        [SerializeField] Transform _shipGunDisplayTransform;
         readonly IShipGunInput _shipGunInput = new PlayerShipGunInput();
         StateMachine _shipGunStateMachine;
         protected ShipGunSettings shipGunSettings;
@@ -85,6 +90,12 @@ namespace GameEntities.Ships.PlayerShips
             _medalsCollected = 0;
             ShootUltimate();
         }
+        void Update()
+        {
+            Vector3 mouseWorldPosition = ScreenUtils.MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            CustomMethods.LookAt2D(_shipGunDisplayTransform, mouseWorldPosition);
+        }
+
         protected void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag(TagsConstants.ENEMY_BULLET))
@@ -102,9 +113,6 @@ namespace GameEntities.Ships.PlayerShips
                 CollectMedal();
             }
         }
-        /// <summary>
-        /// Handles the collecting the medal.
-        /// </summary>
         void CollectMedal()
         {
             ShipCollectedMedal?.Invoke(new PlayerPickedUpMedalEventInfo(++_medalsCollected));
@@ -159,7 +167,7 @@ namespace GameEntities.Ships.PlayerShips
         void HandleExtraLifePowerUpPickedUp() => OnEntityHeals(1);
         void HandleDamageCooldownTimerFinished()
         {
-            gameObject.layer = LayerConstants.PLAYER_LAYER;
+            gameObject.layer = (int)Layers.Player;
             _spriteRenderer.color = _originalShipColor;
         }
         void HandleEntityDiedEvent() => Destroy(gameObject);
@@ -172,8 +180,9 @@ namespace GameEntities.Ships.PlayerShips
         protected void OnUltimateEnded() => ShipUltimateEnded?.Invoke();
         void OnShipTookDamage(float damage)
         {
-            if (!CanReceiveDamage)
+            if (!CanReceiveDamage || damage <= 0)
                 return;
+
             StartCoroutine(PlayerGhostMode());
             OnEntityTookDamage(damage);
             StartCoroutine(PlayerFlashCoroutine());
@@ -185,7 +194,7 @@ namespace GameEntities.Ships.PlayerShips
             //waits for a frame in order to disable the ship collider,
             //in this way the enemies can handle the collision with this ship.
             yield return null;
-            gameObject.layer = LayerConstants.PLAYER_GHOSTMODE_LAYER;
+            gameObject.layer = (int)Layers.PlayerGhostmode;
         }
 
         IEnumerator PlayerFlashCoroutine()

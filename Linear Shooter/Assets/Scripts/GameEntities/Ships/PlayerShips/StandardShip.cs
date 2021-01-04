@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Events;
 using GameEntities.Bullets;
@@ -14,10 +15,11 @@ namespace GameEntities.Ships.PlayerShips
     {
         const string IDLE_ANIMATION_NAME = "StandardShip_IDLE";
         const string ULTIMATE_ANIMATION_PREFIX = "StandardShip_Ultimate";
-        const string REVERSE_TO_IDLE_ANIMATION_NAME = "StandardShip_ReverseToIDLE";
 
         Timer _ultimateTimer;
         float _ultimateDuration;
+
+        int _medalsCollectedSinceUltimateStarted = 0;
 
         PlayerLaserBulletGun _shipGun;
 
@@ -65,6 +67,12 @@ namespace GameEntities.Ships.PlayerShips
 
         void HandleShipCollectedMedal(PlayerPickedUpMedalEventInfo obj)
         {
+            if (_ultimateTimer.IsRunning)
+            {
+                _medalsCollectedSinceUltimateStarted++;
+                return;
+            }
+
             if (obj.PickedUpMedalsCount <= MinMedalsToUltimate)
                 Animator.Play($"{ULTIMATE_ANIMATION_PREFIX}{obj.PickedUpMedalsCount}");
         }
@@ -74,7 +82,7 @@ namespace GameEntities.Ships.PlayerShips
         /// </summary>
         protected override void ShootUltimate()
         {
-            Animator.Play(REVERSE_TO_IDLE_ANIMATION_NAME);
+            StartCoroutine(ReturnToIDLESpriteAfterUltimateFinished());
 
             _shipGun.SetDamageMultiplier(2);
             shipGunSettings.ShootCooldownDuration /= 2;
@@ -82,14 +90,29 @@ namespace GameEntities.Ships.PlayerShips
             _ultimateTimer.StartTimer(_ultimateDuration);
         }
 
+        IEnumerator ReturnToIDLESpriteAfterUltimateFinished()
+        {
+            int spriteNumber = MinMedalsToUltimate;
+            float secondsTillNextSpriteChange = _ultimateDuration / MinMedalsToUltimate;
+            while (_ultimateTimer.IsRunning)
+            {
+                yield return new WaitForSeconds(secondsTillNextSpriteChange);
+                Animator.Play($"{ULTIMATE_ANIMATION_PREFIX}{spriteNumber}");
+            }
+
+            if (_medalsCollectedSinceUltimateStarted == 0)
+                Animator.Play(IDLE_ANIMATION_NAME);
+            else
+                Animator.Play($"{ULTIMATE_ANIMATION_PREFIX}{_medalsCollectedSinceUltimateStarted}");
+
+            _medalsCollectedSinceUltimateStarted = 0;
+        }
+
         //Reset entity to previous state.
         void HandleUltimateTimerFinished()
         {
             _shipGun.SetDamageMultiplier(1);
             shipGunSettings.ShootCooldownDuration = ConfigurationUtils.StandardShipConfig.Guns[_shipGun.BulletTypeName].ShootCooldownDuration;
-
-            if (Animator.GetCurrentAnimatorStateInfo(0).IsName(REVERSE_TO_IDLE_ANIMATION_NAME))
-                Animator.Play(IDLE_ANIMATION_NAME);
 
             OnUltimateEnded();
         }

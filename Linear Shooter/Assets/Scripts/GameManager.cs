@@ -8,6 +8,7 @@ using Utilities.GameData;
 using Utilities.Constants;
 using System;
 using Spawners.WaveSpawners;
+using System.Text;
 
 /// <summary>
 /// Controls the state of the game.
@@ -131,17 +132,23 @@ public class GameManager : MonoBehaviour
         if (highscore < e.Score)
             GameDataUtils.PlayerInfo.ChangeHighscore(e.Score);
 
+        StringBuilder sb = new StringBuilder();
         foreach (var playerShipConfig in ConfigurationUtils.PlayerShips)
         {
             if (!playerShipConfig.Value.Condition())
                 continue;
             if (!GameDataUtils.ShipsInfo.TryGetValue(playerShipConfig.Key, out _))
                 continue;
-
+            ShipInfo shipInfo = GameDataUtils.ShipsInfo[playerShipConfig.Key];
+            if (shipInfo.Unlocked)
+                continue;
             GameDataUtils.ShipsInfo[playerShipConfig.Key].Unlock();
+            sb.AppendLine($"- {shipInfo.DisplayName} Unlocked.");
         }
+        PlayerPrefs.SetString(PlayerPrefsConstants.PLAYER_DEATH_MESSAGE, sb.ToString());
 
         GameDataUtils.Save();
+        PlayerPrefs.Save();
 
         MenuManager.GoToMenu(Menus.GameOverMenu);
     }

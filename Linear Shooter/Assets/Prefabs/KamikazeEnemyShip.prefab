@@ -29,14 +29,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3982397523419813802}
-  m_LocalRotation: {x: -1, y: 0, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children:
-  - {fileID: 9193380780024838798}
+  - {fileID: 2912042316202939272}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -180, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8497226326892562242
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81493fa1e1e294d24ae35f655c6069b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthBar: {fileID: 4835660252091978468}
+  _healthBar: {fileID: 1506281943636720610}
 --- !u!114 &2687847891757075701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,23 +179,13 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!1001 &7236137536986631503
+--- !u!1001 &3717502495360246857
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6162841764973913319}
     m_Modifications:
-    - target: {fileID: 2017225450363179536, guid: 0f4affc143d9147788cb309c8e6d7057,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 138
-      objectReference: {fileID: 0}
-    - target: {fileID: 2017225450363179536, guid: 0f4affc143d9147788cb309c8e6d7057,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2017225450681399233, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -259,7 +249,7 @@ PrefabInstance:
     - target: {fileID: 2017225450681399233, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.187
+      value: -0.169
       objectReference: {fileID: 0}
     - target: {fileID: 2017225450681399233, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
@@ -304,17 +294,17 @@ PrefabInstance:
     - target: {fileID: 2017225450681399233, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.0027
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 2017225450681399233, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.0027
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 2017225450681399237, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
       propertyPath: m_Name
-      value: HealthBarCanvas
+      value: HealthBar
       objectReference: {fileID: 0}
     - target: {fileID: 2017225450984197299, guid: 0f4affc143d9147788cb309c8e6d7057,
         type: 3}
@@ -328,17 +318,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f4affc143d9147788cb309c8e6d7057, type: 3}
---- !u!224 &9193380780024838798 stripped
+--- !u!224 &2912042316202939272 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2017225450681399233, guid: 0f4affc143d9147788cb309c8e6d7057,
     type: 3}
-  m_PrefabInstance: {fileID: 7236137536986631503}
+  m_PrefabInstance: {fileID: 3717502495360246857}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4835660252091978468 stripped
+--- !u!114 &1506281943636720610 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2841872110603624363, guid: 0f4affc143d9147788cb309c8e6d7057,
     type: 3}
-  m_PrefabInstance: {fileID: 7236137536986631503}
+  m_PrefabInstance: {fileID: 3717502495360246857}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5af8932e81454012a29a53e69a55b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _shipGunDisplayTransform: {fileID: 4977098789361455124}
 --- !u!1001 &2339278987447690419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28,7 +29,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: fe500343e1138493d9485d4a87933ee9,
+      objectReference: {fileID: -2721889346068650212, guid: abb8d5886fca44721956147f41f9ce96,
         type: 3}
     - target: {fileID: -3780142602338690206, guid: f2cbbe6ac2d0846138b5d9fcf159b223,
         type: 3}
@@ -200,6 +201,12 @@ PrefabInstance:
 --- !u!1 &1265870538719030064 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3596000418865352579, guid: f2cbbe6ac2d0846138b5d9fcf159b223,
+    type: 3}
+  m_PrefabInstance: {fileID: 2339278987447690419}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4977098789361455124 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7306242822044152999, guid: f2cbbe6ac2d0846138b5d9fcf159b223,
     type: 3}
   m_PrefabInstance: {fileID: 2339278987447690419}
   m_PrefabAsset: {fileID: 0}

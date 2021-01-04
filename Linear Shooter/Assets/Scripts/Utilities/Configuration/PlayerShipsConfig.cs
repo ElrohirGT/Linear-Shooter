@@ -36,6 +36,12 @@ namespace Utilities.Configuration
         public GrenadierShipConfig(float minScoreToUnlock, int minMedalsToUltimate, float rotationSpeed, float thrustAmount, Dictionary<string, GunConfig> guns, float maxHitpoints, float initialHitpoints, float baseDamage, float damageCooldownDuration) : base(minScoreToUnlock, minMedalsToUltimate, rotationSpeed, thrustAmount, guns, maxHitpoints, initialHitpoints, baseDamage, damageCooldownDuration)
         {
         }
+
+        public override bool Condition()
+        {
+            //TODO delete this override, this is just for the moment the grenadier ship is no implemented.
+            return false;
+        }
     }
 
     public abstract class PlayerShipConfig : ShipConfig

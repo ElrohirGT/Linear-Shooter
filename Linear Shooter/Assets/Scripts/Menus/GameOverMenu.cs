@@ -15,12 +15,18 @@ public class GameOverMenu : MonoBehaviour
     [SerializeField]
     Text _scoreDisplay;
 
+    [SerializeField]
+    Text _messagesDisplay;
+
     private void Awake()
     {
         float score = PlayerPrefs.GetFloat(PlayerPrefsConstants.PLAYER_LAST_SCORE);
+        string message = PlayerPrefs.GetString(PlayerPrefsConstants.PLAYER_DEATH_MESSAGE);
         float highscore = GameDataUtils.PlayerInfo.Highscore;
+
         MenuManager.Initialize();
         _scoreDisplay.text = score.ToString("n0");
+        _messagesDisplay.text = message;
 
         if (score == highscore)
             _scoreDisplay.color = new Color(255, 215, 0);

@@ -102,12 +102,12 @@ namespace Utilities.Configuration
 
         #region Easy Enemies Config
         public static EnemyShipConfig BasicEnemyConfig => _configurationValues.GameEntities.Enemies.EasyEnemies.BasicEnemy;
-
         public static KamikazeEnemyConfig KamikazeEnemyConfig => _configurationValues.GameEntities.Enemies.EasyEnemies.KamikazeEnemy;
         #endregion
 
         #region MediumEnemiesConfig
         public static EnemyShipConfig BasicShooterEnemyConfig => _configurationValues.GameEntities.Enemies.MediumEnemies.BasicShooterEnemy;
+        public static ShieldEnemyConfig ShieldEnemy => _configurationValues.GameEntities.Enemies.MediumEnemies.ShieldEnemy;
         #endregion
 
         #endregion

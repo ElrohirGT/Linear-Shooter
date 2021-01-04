@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 5833830412675851283}
   - component: {fileID: 3322455650915424252}
   - component: {fileID: -1812548998873301045}
-  - component: {fileID: -5310058363479123803}
   - component: {fileID: -749391796373755355}
   - component: {fileID: 8277839867983876284}
   - component: {fileID: 8959491141977199546}
+  - component: {fileID: 4782473833576917572}
   m_Layer: 12
   m_Name: PlayerMedal
   m_TagString: Medal
@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 6611510323125084055}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4.5, y: 4.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -75,12 +75,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f71d7293268af405886b5db1566bcf1b, type: 3}
-  m_Color: {r: 1, g: 0.97145116, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 4ad49dd9766974bb68ed41351890cde8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -107,37 +107,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!60 &-5310058363479123803
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6611510323125084055}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0, y: 0.5}
-      - {x: -0.43301272, y: 0.24999999}
-      - {x: -0.4330127, y: -0.25000003}
-      - {x: 0.00000004371139, y: -0.5}
-      - {x: 0.43301272, y: -0.24999996}
-      - {x: 0.43301272, y: 0.24999996}
 --- !u!114 &-749391796373755355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,3 +143,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 513117a289e9e4241b4e2ab732b8892a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &4782473833576917572
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6611510323125084055}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.16

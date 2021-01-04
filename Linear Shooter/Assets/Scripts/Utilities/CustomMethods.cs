@@ -7,6 +7,41 @@ namespace Utilities
     public static class CustomMethods
     {
         /// <summary>
+        /// Makes the <paramref name="transform"/> look at the <paramref name="point"/> ignoring z.
+        /// </summary>
+        /// <param name="transform">The transform to rotate.</param>
+        /// <param name="point">The point to look at (in worldpoints).</param>
+        public static void LookAt2D(Transform transform, Vector3 point)
+        {
+            point.z = transform.position.z;
+            transform.up = point - transform.position;
+        }
+        /// <summary>
+        /// Calculates the rotation input that an AI ship must give.
+        /// Uses a method found on: <see href="https://stackoverflow.com/a/14807604/10812984"/>
+        /// </summary>
+        /// <param name="entityTransform">The ship transform.</param>
+        /// <param name="target">The target position wee need to rotate to.</param>
+        /// <param name="delta">The margin of error, the lower the value the more precise the rotation will be.</param>
+        /// <returns>0 for no rotation needed, or either a -1 o 1 depending on the rotation needed.</returns>
+        public static float CalculateRotationInput(Transform entityTransform, Vector3 target, float delta)
+        {
+            float rotationInput;
+
+            float v = (entityTransform.position.x - target.x) * entityTransform.up.y;
+            float x = (entityTransform.position.y - target.y) * entityTransform.up.x;
+
+            if (NearlyEqual(v, x, delta))
+                rotationInput = 0;
+            else if (v < x)
+                rotationInput = 1;
+            else
+                rotationInput = -1;
+
+            return rotationInput;
+        }
+
+        /// <summary>
         /// Checks if the two numbers are nearly equals. Found on:
         /// <see href="https://stackoverflow.com/a/3875619/10812984"/>
         /// </summary>

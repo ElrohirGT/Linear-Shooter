@@ -45,3 +45,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Bullets
+    uniqueID: 294936037
+    locked: 0
+  - name: Ships
+    uniqueID: 3085769151
+    locked: 0
+  - name: ShipGuns
+    uniqueID: 2483281861
+    locked: 0
+  - name: Explosions
+    uniqueID: 91165875
+    locked: 0

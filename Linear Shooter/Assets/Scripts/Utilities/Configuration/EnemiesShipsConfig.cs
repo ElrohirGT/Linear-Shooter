@@ -34,12 +34,14 @@ namespace Utilities.Configuration
     public partial class MediumEnemiesConfig
     {
         [JsonConstructor]
-        public MediumEnemiesConfig(EnemyShipConfig basicShooterEnemy)
+        public MediumEnemiesConfig(EnemyShipConfig basicShooterEnemy, ShieldEnemyConfig shieldEnemy)
         {
             BasicShooterEnemy = basicShooterEnemy;
+            ShieldEnemy = shieldEnemy;
         }
 
         [J("BasicShooterEnemy", Required = R.Always)] public EnemyShipConfig BasicShooterEnemy { get; }
+        [J("ShieldEnemy", Required = R.Always)] public ShieldEnemyConfig ShieldEnemy { get; }
     }
 
     public class EnemyShipConfig : ShipConfig
@@ -55,6 +57,22 @@ namespace Utilities.Configuration
         [J("RotationCooldown", Required = R.Always)] public float RotationCooldown { get; }
         [J("PointsWorth", Required = R.Always)] public float PointsWorth { get; }
     }
+
+    public class ShieldEnemyConfig : EnemyShipConfig
+    {
+        [JsonConstructor]
+        public ShieldEnemyConfig(float shieldCooldown, float shieldLife, float shieldScale, float pointsWorth, float rotationSpeed, float rotationCooldown, float thrustAmount, Dictionary<string, GunConfig> guns, float maxHitpoints, float initialHitpoints, float baseDamage, float damageCooldownDuration) : base(pointsWorth, rotationSpeed, rotationCooldown, thrustAmount, guns, maxHitpoints, initialHitpoints, baseDamage, damageCooldownDuration)
+        {
+            ShieldScale = shieldScale;
+            ShieldLife = shieldLife;
+            ShieldCooldown = shieldCooldown;
+        }
+
+        [J("ShieldLife", Required = R.Always)] public float ShieldLife { get; }
+        [J("ShieldCooldown", Required = R.Always)] public float ShieldCooldown { get; }
+        [J("ShieldScale", Required = R.Always)] public float ShieldScale { get; }
+    }
+
     public class KamikazeEnemyConfig : EnemyShipConfig
     {
         [JsonConstructor]

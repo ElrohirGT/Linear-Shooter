@@ -58,7 +58,7 @@ namespace GameEntities
         /// Get's how much time the ship has on break before being able to receive damage again.
         /// By default is 0.5.
         /// </summary>
-        protected float _damageCooldownDuration = 0.5f;
+        float _damageCooldownDuration = 0.5f;
         #endregion
 
         /// <summary>
@@ -150,17 +150,15 @@ namespace GameEntities
         /// </summary>
         protected void OnEntityTookDamage(float damageTaken)
         {
-            if (!CanReceiveDamage)
+            if (!_canReceiveDamage || damageTaken <= 0)
                 return;
 
             _canReceiveDamage = false;
+            TakeDamage(damageTaken);
 
-            if (damageTaken > 0)
-            {
-                TakeDamage(damageTaken);
-                EntityTookDamage?.Invoke(new EntityHitpointsChanged(_currentHitpoints, _maxHitpoints));
-                _damageCooldownTimer.StartTimer(_damageCooldownDuration);
-            }
+            EntityTookDamage?.Invoke(new EntityHitpointsChanged(_currentHitpoints, _maxHitpoints));
+            _damageCooldownTimer.StartTimer(_damageCooldownDuration);
+
             if (_currentHitpoints <= 0)
                 OnEntityDied();
         }
@@ -190,7 +188,7 @@ namespace GameEntities
         void TakeDamage(float damage)
         {
             if (damage < 0)
-                throw new ArgumentOutOfRangeException(nameof(damage), "The damage to take has to be a positive number!");
+                throw new ArgumentOutOfRangeException(nameof(damage), "The damage to take must be a positive number!");
             _currentHitpoints -= damage;
         }
         /// <summary>
@@ -200,7 +198,7 @@ namespace GameEntities
         void HealEntity(float healAmount)
         {
             if (healAmount < 0)
-                throw new ArgumentOutOfRangeException(nameof(healAmount), "The heal amount has to be a positive number!");
+                throw new ArgumentOutOfRangeException(nameof(healAmount), "The heal amount must be a positive number!");
             _currentHitpoints += healAmount;
             if (_currentHitpoints > _maxHitpoints)
                 _maxHitpoints = _currentHitpoints;

@@ -2,6 +2,8 @@ using UnityEngine;
 using Utilities;
 using Utilities.Configuration;
 using GameEntities.Pools;
+using Utilities.Constants;
+
 
 namespace GameEntities.Bullets
 {
@@ -47,6 +49,8 @@ namespace GameEntities.Bullets
         /// </summary>
         private bool _changeTargetPoint = false;
         #endregion
+
+        RaycastHit2D[] raycastHits = new RaycastHit2D[5];
 
         /// <summary>
         /// Get's the damage that this bullet does to an entity. This can be changed so it's a custom damage.
@@ -135,13 +139,17 @@ namespace GameEntities.Bullets
         /// </summary>
         protected virtual void GetTargetPoint()
         {
+            /*FIXME When the ship is all the way to the top of the screen bullets don't shoot the correct distance,
+             * sometimes noe even the correct direction.
+             */
+            Vector3 transformUp = transform.up;
             //source: https://stackoverflow.com/questions/63034454/unity-get-point-on-edge-of-the-screen-that-object-directed-to
-            Ray ray = new Ray(transform.position, transform.up);
+            Ray ray = new Ray(transform.position, transformUp);
 
             float currentMinDistance = float.MaxValue;
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(ScreenUtils.MainCamera);
 
-            //The first 4 points are the left, right, up and down parts of the plane
+            //The first 4 points are the left, right, down and up parts of the plane
             for (var i = 0; i < 4; i++)
             {
                 // Raycast against the plane
@@ -155,14 +163,7 @@ namespace GameEntities.Bullets
             }
 
             //add or substract 1 because the bullet needs to have a point outside the world.
-            if (transform.up.x < 0)
-                _targetPoint.x -= 1;
-            if (transform.up.x > 0)
-                _targetPoint.x += 1;
-            if (transform.up.y < 0)
-                _targetPoint.y -= 1;
-            if (transform.up.y > 0)
-                _targetPoint.y += 1;
+            _targetPoint *= 1.05f;
         }
         /// <summary>
         /// Resets the entity to be used again,

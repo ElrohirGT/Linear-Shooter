@@ -65,6 +65,10 @@ namespace Utilities
         /// Get's the world height. Equal to calling WorldTop-WorldBottom.
         /// </summary>
         public static float WorldHeight => WorldTop - WorldBottom;//WorldBottom is negative, so "-" changes it's sign.
+        /// <summary>
+        /// Returns the distance a diagonal of that passes through the center of the screen would return.
+        /// </summary>
+        public static float WorldMaxDistance => WorldTopRightCorner.magnitude * 2;
         #endregion
 
         #region World Points
@@ -81,7 +85,7 @@ namespace Utilities
         /// <summary>
         /// Get's the top-most point in the world.
         /// </summary>
-        public static float WorldTop => WorldUpperLeftCorner.y;
+        public static float WorldTop => WorldTopLeftCorner.y;
 
         /// <summary>
         /// Get's the bottom-most point in the world.
@@ -117,7 +121,7 @@ namespace Utilities
         /// <summary>
         /// Get's the upper left corner of the world.
         /// </summary>
-        public static Vector2 WorldUpperLeftCorner
+        public static Vector2 WorldTopLeftCorner
         {
             get
             {
@@ -129,7 +133,7 @@ namespace Utilities
         /// <summary>
         /// Get's the upper right corner of the world.
         /// </summary>
-        public static Vector2 WorldUpperRightCorner
+        public static Vector2 WorldTopRightCorner
         {
             get
             {

@@ -38,8 +38,11 @@ namespace GameEntities.Ships.Guns
         /// Manages the input to know when to shoot.
         /// </summary>
         IShipGunInput _shipGunInput;
+
         readonly string _bulletTypeName = typeof(T).Name;
         public string BulletTypeName => _bulletTypeName;
+
+        protected ShipGunSettings ShipGunSettings => _shipGunSettings;
 
         /*
         .##...##..######..######..##..##...####...#####....####..
@@ -101,9 +104,7 @@ namespace GameEntities.Ships.Guns
             bulletToShoot.transform.position = transform.position;
             bulletToShoot.transform.rotation = transform.rotation;
 
-            //bulletToShoot.Move(_shipGunSettings.BulletInitialImpulseMagnitud * transform.up.normalized);
             bulletToShoot.Initialize(_shipGunSettings.BulletInitialImpulseMagnitud, false);
-            //bulletToShoot.TargetPoint = transform.up * ScreenUtils.WorldUpperLeftCorner;
         }
         /// <summary>
         /// Enables the entity to shoot again.

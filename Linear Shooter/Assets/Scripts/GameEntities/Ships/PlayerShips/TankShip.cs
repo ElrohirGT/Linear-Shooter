@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Events;
 using GameEntities.Bullets;
 using GameEntities.Ships.Guns;
 using GameEntities.Ships.Motors;
@@ -13,9 +14,10 @@ namespace GameEntities.Ships.PlayerShips
     public class TankShip : PlayerShip
     {
         const string IDLE_ANIMATION_NAME = "TankShip_IDLE";
+        const string ULTIMATE_PROGRESS_ANIMATION_PREFIX = "TankShip_Ultimate";
+        const string ULTIMATE_ANIMATION_NAME = "TankShip_Ultimate";
         const string ACTIVATE_ULTIMATE_ANIMATION_NAME = "TankShip_ActivateUltimate";
         const string DEACTIVATE_ULTIMATE_ANIMATION_NAME = "TankShip_DeactivateUltimate";
-        const string ULTIMATE_ANIMATION_NAME = "TankShip_Ultimate";
 
         Timer _ultimateTimer;
         float _ultimateDuration;
@@ -24,6 +26,7 @@ namespace GameEntities.Ships.PlayerShips
         float _thrustScaleFactor;
 
         PlayerHeavyLaserBulletGun _shipGun;
+        private int _medalsCollectedSinceUltimateStarted;
 
         protected override ShipMotorSettings CreateMotorSettings() => new ShipMotorSettings(
                 ConfigurationUtils.TankShipConfig.RotationSpeed,
@@ -63,6 +66,20 @@ namespace GameEntities.Ships.PlayerShips
 
             _rotationScaleFactor = ConfigurationUtils.TankShipConfig.RotationScaleFactor;
             _thrustScaleFactor = ConfigurationUtils.TankShipConfig.ThrustScaleFactor;
+
+            ShipCollectedMedal += HandleShipCollectedMedal;
+        }
+
+        void HandleShipCollectedMedal(PlayerPickedUpMedalEventInfo obj)
+        {
+            if (_ultimateTimer.IsRunning)
+            {
+                _medalsCollectedSinceUltimateStarted++;
+                return;
+            }
+
+            if (obj.PickedUpMedalsCount <= MinMedalsToUltimate)
+                Animator.Play($"{ULTIMATE_PROGRESS_ANIMATION_PREFIX}{obj.PickedUpMedalsCount}");
         }
 
         protected override void ShootUltimate()
@@ -75,6 +92,7 @@ namespace GameEntities.Ships.PlayerShips
             Animator.Play(ACTIVATE_ULTIMATE_ANIMATION_NAME);
             StartCoroutine(ActivateUltimateAnimation());
         }
+
         void HandleUltimateTimerFinished()
         {
             MakeVincible();
@@ -89,13 +107,28 @@ namespace GameEntities.Ships.PlayerShips
 
         IEnumerator ActivateUltimateAnimation()
         {
-            yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+            //Wait a frame so the animator can change state, so the animation.length returns the true length of the animation
+            yield return null;
+
+            AnimatorStateInfo animation = Animator.GetCurrentAnimatorStateInfo(0);
+            yield return new WaitForSeconds(animation.length);
+
             Animator.Play(ULTIMATE_ANIMATION_NAME);
         }
         IEnumerator DeactivateUltimateAnimation()
         {
-            yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
-            Animator.Play(IDLE_ANIMATION_NAME);
+            //Wait a frame so the animator can change state, so the animation.length returns the true length of the animation
+            yield return null;
+
+            AnimatorStateInfo animation = Animator.GetCurrentAnimatorStateInfo(0);
+            yield return new WaitForSeconds(animation.length);
+
+            if (_medalsCollectedSinceUltimateStarted == 0)
+                Animator.Play(IDLE_ANIMATION_NAME);
+            else
+                Animator.Play($"{ULTIMATE_PROGRESS_ANIMATION_PREFIX}{_medalsCollectedSinceUltimateStarted}");
+
+            _medalsCollectedSinceUltimateStarted = 0;
         }
     }
 }

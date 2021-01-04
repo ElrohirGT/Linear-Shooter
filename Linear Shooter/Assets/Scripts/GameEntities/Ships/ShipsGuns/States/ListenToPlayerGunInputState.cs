@@ -1,7 +1,5 @@
 ﻿using System;
 using GameEntities.Ships.Guns.Inputs;
-using UnityEngine;
-using GameEntities;
 
 namespace GameEntities.Ships.Guns.States
 {

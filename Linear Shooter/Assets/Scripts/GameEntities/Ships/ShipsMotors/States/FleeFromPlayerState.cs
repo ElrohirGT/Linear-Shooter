@@ -67,18 +67,7 @@ namespace GameEntities.Ships.Motors.States
 
         void UpdateRotation()
         {
-            Vector3 playerPosition = Player.Position;
-
-            float v = (transform.position.x - playerPosition.x) * transform.up.y;
-            float x = (transform.position.y - playerPosition.y) * transform.up.x;
-            //source -> https://stackoverflow.com/a/14807604/10812984
-            //_currenRotationInput = v > x ? -1 : 1;
-            if (CustomMethods.NearlyEqual(v, x, 0.4))
-                _currenRotationInput = 0;
-            else if (v < x)
-                _currenRotationInput = -1;
-            else
-                _currenRotationInput = 1;
+            _currenRotationInput = -CustomMethods.CalculateRotationInput(transform, Player.Position, 0.4f);
 
             Tick();
             _rotationCooldownTimer.StartTimer(_rotationCooldownDuration);

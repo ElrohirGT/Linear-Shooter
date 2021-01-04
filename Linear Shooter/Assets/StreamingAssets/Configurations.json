@@ -17,7 +17,7 @@
             },
             "MediumEnemies": {
                 "Pattern": [ 1, 2, 1 ],
-                "GrowthValue": 0.5,
+                "GrowthValue": 0.3,
                 "CheckPoints": [
                     {
                         "WaveNumber": 1,
@@ -157,7 +157,8 @@
             "SpawnCooldownDuration": 0.5,
             "WaveCooldownDuration": 2.5,
             "Probabilities": {
-                "BasicShooterEnemy": 1
+                "BasicShooterEnemy": 0,
+                "ShieldEnemy": 1
             }
         }
     },
@@ -194,15 +195,15 @@
                 "Guns": {}
             },
             "TankShip": {
-                "MinMedalsToUltimate": 5,
+                "MinMedalsToUltimate": 6,
                 "MaxHitpoints": 4,
                 "InitialHitpoints": 4,
                 "BaseDamage": 1,
                 "RotationSpeed": 260.0,
                 "ThrustAmount": 4.0,
                 "DamageCooldownDuration": 1.5,
-                "UltimateDuration": 10,
                 "MinScoreToUnlock": 2000,
+                "UltimateDuration": 10,
                 "RotationScaleFactor": 1.50,
                 "ThrustScaleFactor": 2.5,
                 "Guns": {
@@ -229,7 +230,7 @@
             },
             "HeavyLaserBullet": {
                 "BulletDamage": 2,
-                "BulletLifeDuration": 2.0
+                "BulletLifeDuration": 1.75
             }
         },
         "Enemies": {
@@ -274,6 +275,20 @@
                             "BulletInitialImpulseMagnitude": 6.6
                         }
                     }
+                },
+                "ShieldEnemy": {
+                    "DamageCooldownDuration": 0.01,
+                    "MaxHitpoints": 1,
+                    "InitialHitpoints": 1,
+                    "BaseDamage": 1,
+                    "PointsWorth": 200,
+                    "RotationSpeed": 200.0,
+                    "RotationCooldown": 0.2,
+                    "ThrustAmount": 4,
+                    "ShieldScale": 12,
+                    "ShieldLife": 3,
+                    "ShieldCooldown": 5,
+                    "Guns": {}
                 }
             }
         }

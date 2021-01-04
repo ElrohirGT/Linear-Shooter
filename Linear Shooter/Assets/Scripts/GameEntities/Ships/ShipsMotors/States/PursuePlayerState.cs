@@ -14,8 +14,6 @@ namespace GameEntities.Ships.Motors.States
         float _currenRotationInput = 0;
 
         public IShipMotorInput ShipMotorInput => _shipMotorInput;
-        public Timer RotationCooldownTimer => _rotationCooldownTimer;
-        public float RotationCooldownDuration => _rotationCooldownDuration;
 
         public event Action Entered;
         public event Action Exited;
@@ -26,7 +24,7 @@ namespace GameEntities.Ships.Motors.States
         /// <param name="shipMotorInput">The input manager of the motor.</param>
         /// <param name="rotationCooldownDuration">The cooldown duration for rotating the ship.</param>
         /// <returns>This instance of the state.</returns>
-        public virtual PursuePlayerState Initialize(IShipMotorInput shipMotorInput, float rotationCooldownDuration)
+        public PursuePlayerState Initialize(IShipMotorInput shipMotorInput, float rotationCooldownDuration)
         {
             _shipMotorInput = shipMotorInput;
             _rotationCooldownDuration = rotationCooldownDuration;
@@ -63,18 +61,7 @@ namespace GameEntities.Ships.Motors.States
 
         protected void UpdateRotation()
         {
-            Vector3 playerPosition = Player.Position;
-
-            float v = (transform.position.x - playerPosition.x) * transform.up.y;
-            float x = (transform.position.y - playerPosition.y) * transform.up.x;
-            //source -> https://stackoverflow.com/a/14807604/10812984
-            //_currenRotationInput = v > x ? -1 : 1;
-            if (CustomMethods.NearlyEqual(v, x, 0.4))
-                _currenRotationInput = 0;
-            else if (v < x)
-                _currenRotationInput = 1;
-            else
-                _currenRotationInput = -1;
+            _currenRotationInput = CustomMethods.CalculateRotationInput(transform, Player.Position, 0.4f);
 
             Tick();
             _rotationCooldownTimer.StartTimer(_rotationCooldownDuration);
