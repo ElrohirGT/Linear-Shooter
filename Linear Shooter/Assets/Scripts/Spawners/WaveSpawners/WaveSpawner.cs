@@ -58,6 +58,8 @@ namespace Spawners.WaveSpawners
 
         bool SpawnerFinishedSpawningEnemies => _currentWaveSpawnedEntities >= _currentWaveTotalEntitiesToSpawn;
 
+        bool AllCurrentWaveEntitiesAreDead => _currentWaveEntityCount <= 0;
+
         public event Action WaveFinished;
 
         /*
@@ -97,14 +99,13 @@ namespace Spawners.WaveSpawners
             WaveCheckPoint[] checkPoints = GetWaveGeneratorCheckpoints();
 
             _waveGenerator = new WaveGenerator(growthValue, pattern, checkPoints);
-            _currentWaveTotalEntitiesToSpawn = _waveGenerator.GetWave();
 
             _spawnDelay = GetSpawnCooldown();
             _waveDelay = GetWaveCooldown();
 
             ProbabilitiesByPools = ConstructPoolsAndProbabilitiesDictionary(GetPoolReferencesFromGameObject());
 
-            SpawnWave();
+            HandleWaveDelayTimerFinished();
         }
 
         IBasePool<ShipEnemy>[] GetPoolReferencesFromGameObject()
@@ -128,28 +129,34 @@ namespace Spawners.WaveSpawners
         }
         #endregion
 
-        void HandleNextWave()
+        void HandleNextWave() => _waveDelayTimer.StartTimer(_waveDelay);
+
+        void HandleWaveDelayTimerFinished()
+        {
+            UpdateInfoFromNextWave();
+            HandleSpawnDelayTimerFinished();
+        }
+
+        void UpdateInfoFromNextWave()
         {
             _currentWaveEntityCount = 0;
             _currentWaveSpawnedEntities = 0;
             _currentWaveTotalEntitiesToSpawn = _waveGenerator.GetWave();
-            _waveDelayTimer.StartTimer(_waveDelay);
         }
-
-        void HandleWaveDelayTimerFinished() => SpawnWave();
-
-        void SpawnWave() => HandleSpawnDelayTimerFinished();
 
         void HandleSpawnDelayTimerFinished()
         {
-            if (SpawnerFinishedSpawningEnemies)
+            if (AllCurrentWaveEntitiesAreDead && SpawnerFinishedSpawningEnemies)
             {
                 OnCurrentWaveFinished();
                 return;
             }
 
+            if (SpawnerFinishedSpawningEnemies)
+                return;
+
             AliveEntity spawnedEntity = Spawn();
-            //We need to cast it to Action so the method groupd is converted to a Delegate.
+            //We need to cast it to Action so the method group is converted to a Delegate.
             if (!EntityHasAlreadyAnEventHandler(spawnedEntity, (Action)HandleEntityDied))
                 spawnedEntity.EntityDied += HandleEntityDied;
 
@@ -170,7 +177,7 @@ namespace Spawners.WaveSpawners
         {
             _currentWaveEntityCount--;
 
-            if (_currentWaveEntityCount <= 0)
+            if (AllCurrentWaveEntitiesAreDead)
                 OnCurrentWaveFinished();
         }
 

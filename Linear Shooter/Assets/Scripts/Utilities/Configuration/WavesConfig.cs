@@ -62,5 +62,7 @@ namespace Utilities.Configuration
 
         [J("WaveNumber", Required = R.Always)] public int WaveNumber { get; }
         [J("QuantityToSpawn", Required = R.Always)] public int QuantityToSpawn { get; }
+
+        public override string ToString() => $"{{#:{WaveNumber}; Q:{QuantityToSpawn}}}";
     }
 }
