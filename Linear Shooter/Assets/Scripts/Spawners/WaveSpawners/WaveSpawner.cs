@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using GameEntities;
 using GameEntities.Pools;
 using GameEntities.Ships.Enemies;
 using UnityEngine;
@@ -89,7 +87,7 @@ namespace Spawners.WaveSpawners
         /// <summary>
         /// An event that fires when the current wave has finished.
         /// </summary>
-        public Action WaveFinished;
+        public event Action WaveFinished;
 
         /*
         .##...##..######..######..##..##...####...#####....####..
@@ -167,32 +165,28 @@ namespace Spawners.WaveSpawners
         }
 
         /// <summary>
-        /// Start's the spawns cicle.
-        /// </summary>
-        void SpawnWave() => HandleDelayBetweenSpawnsTimerFinished();
-
-        /// <summary>
         /// Handles the delay between waves of entities.
         /// </summary>
         void HandleDelayBetweenWavesTimerFinished() => SpawnWave();
-
+        /// <summary>
+        /// Start's the spawns cicle.
+        /// </summary>
+        void SpawnWave() => HandleDelayBetweenSpawnsTimerFinished();
         /// <summary>
         /// Handles the delay between the spawn of every enemy in the same wave.
         /// </summary>
         void HandleDelayBetweenSpawnsTimerFinished()
         {
-            //This wave the spawners doesn't spawns anything so it just says it finished.
             if (_currentWaveTotalEntitiesToSpawn == 0)
             {
                 OnCurrentWaveFinished();
                 return;
             }
 
-            //The spawner already spawned everything it needed to.
-            if (_currentWaveSpawnedEntities >= _currentWaveTotalEntitiesToSpawn)
+            bool spawnerFinishedSpawningEnemies = _currentWaveSpawnedEntities >= _currentWaveTotalEntitiesToSpawn;
+            if (spawnerFinishedSpawningEnemies)
                 return;
 
-            //The spawner is not active.
             if (!_isActive)
                 return;
 
@@ -202,7 +196,6 @@ namespace Spawners.WaveSpawners
             _currentWaveEntitiesCount++;
             _spawnCooldownTimer.StartTimer(_spawnCooldownDuration);
         }
-
         /// <summary>
         /// Updates the current entity count and possibly announces the wave has ended.
         /// </summary>
@@ -213,12 +206,10 @@ namespace Spawners.WaveSpawners
             if (_currentWaveEntitiesCount <= 0)
                 OnCurrentWaveFinished();
         }
-
         /// <summary>
         /// Invokes the wave finished event.
         /// </summary>
         private void OnCurrentWaveFinished() => WaveFinished?.Invoke();
-
         /// <summary>
         /// A method that spawns one entity of the wave.
         /// </summary>

@@ -7,6 +7,17 @@ namespace Utilities
     public static class CustomMethods
     {
         /// <summary>
+        /// Plays the given animation from the animator, it uses an int so it's slighty more eficcient.
+        /// </summary>
+        /// <param name="animator">The animator that controls the animation of the gameobject.</param>
+        /// <param name="animationName">The state name of the animation controller.</param>
+        public static void PlayAnimation(Animator animator, string animationName)
+        {
+            int hash = Animator.StringToHash(animationName);
+            animator.Play(hash);
+        }
+
+        /// <summary>
         /// Makes the <paramref name="transform"/> look at the <paramref name="point"/> ignoring z.
         /// </summary>
         /// <param name="transform">The transform to rotate.</param>
@@ -24,7 +35,7 @@ namespace Utilities
         /// <param name="target">The target position wee need to rotate to.</param>
         /// <param name="delta">The margin of error, the lower the value the more precise the rotation will be.</param>
         /// <returns>0 for no rotation needed, or either a -1 o 1 depending on the rotation needed.</returns>
-        public static float CalculateRotationInput(Transform entityTransform, Vector3 target, float delta)
+        public static float CalculateRotationInput(Transform entityTransform, Vector3 target, float delta = 0.3f)
         {
             float rotationInput;
 

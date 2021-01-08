@@ -157,8 +157,8 @@
             "SpawnCooldownDuration": 0.5,
             "WaveCooldownDuration": 2.5,
             "Probabilities": {
-                "BasicShooterEnemy": 0,
-                "ShieldEnemy": 1
+                "BasicShooterEnemy": 0.8,
+                "ShieldEnemy": 0.2
             }
         }
     },
@@ -268,7 +268,7 @@
                     "PointsWorth": 200,
                     "RotationSpeed": 120.0,
                     "RotationCooldown": 0.1,
-                    "ThrustAmount": 1.5,
+                    "ThrustAmount": 2,
                     "Guns": {
                         "EnemyLaserBullet": {
                             "ShootCooldownDuration": 2,
@@ -281,13 +281,13 @@
                     "MaxHitpoints": 1,
                     "InitialHitpoints": 1,
                     "BaseDamage": 1,
-                    "PointsWorth": 200,
+                    "PointsWorth": 250,
                     "RotationSpeed": 200.0,
-                    "RotationCooldown": 0.2,
-                    "ThrustAmount": 4,
-                    "ShieldScale": 12,
+                    "RotationCooldown": 0.6,
+                    "ThrustAmount": 4.5,
+                    "ShieldScale": 8,
                     "ShieldLife": 3,
-                    "ShieldCooldown": 5,
+                    "ShieldCooldown": 7,
                     "Guns": {}
                 }
             }

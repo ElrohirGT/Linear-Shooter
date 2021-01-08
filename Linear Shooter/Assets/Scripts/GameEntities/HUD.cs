@@ -109,8 +109,8 @@ public class HUD : MonoBehaviour
         FreezerPowerUp.PickedUp += HandleFreezerPowerUpPickedUp;
 
         _currentHighScore = GameDataUtils.PlayerInfo.Highscore;
-        _currentLives = Player.RemainingLives;
-        _maxMedalCount = Player.MedalsForUltimate;
+        _currentLives = GameManager.PlayerHealth;
+        _maxMedalCount = GameManager.MinMedalsToUltimate;
 
         UpdateDisplay();
     }

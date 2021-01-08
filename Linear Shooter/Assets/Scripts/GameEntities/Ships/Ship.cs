@@ -13,17 +13,14 @@ namespace GameEntities.Ships
         /// Responds to the corresponding movement input's.
         /// </summary>
         ShipMotor _shipMotor;
-
         /// <summary>
         /// Determines the input's that this entity takes, so it can respond to it.
         /// </summary>
         IShipMotorInput _shipMotorInput;
-
         /// <summary>
         /// Get's the settings that modify the motor of the ship.
         /// </summary>
         ShipMotorSettings _shipMotorSettings;
-
         /// <summary>
         /// Manages all the states of the ship motor.
         /// </summary>

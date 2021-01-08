@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using GameEntities.Pools;
 using GameEntities.Shields;
 using GameEntities.Ships.Motors;
@@ -6,6 +7,7 @@ using GameEntities.Ships.Motors.States;
 using UnityEngine;
 using Utilities;
 using Utilities.Configuration;
+using Utilities.Constants;
 
 namespace GameEntities.Ships.Enemies.MediumEnemies
 {
@@ -14,16 +16,25 @@ namespace GameEntities.Ships.Enemies.MediumEnemies
         [SerializeField]
         Shield _shield;
 
+        Animator _animator;
+        const string IDLE_ANIMATION = "ShieldEnemy_IDLE";
+        const string ACTIVATE_SHIELD_ANIMATION = "ShieldEnemy_ActivateShield";
+        const string SHIELD_ACTIVE = "ShieldEnemy_ShieldActive";
+        const string DEACTIVATE_SHIELD_ANIMATION = "ShieldEnemy_DeactivateShield";
+
         Timer _shieldCooldownTimer;
         float _shieldCooldown;
+        bool IsShieldActivated => _shield.isActiveAndEnabled;
 
-        IState _initialShipMotorState;
+        IState _fleeFromPlayerState;
 
         public override void ReturnToPool() => ShieldEnemyPool.Instance.ReturnToPool(this);
 
         protected override void Awake()
         {
             base.Awake();
+
+            _animator = GetComponent<Animator>();
 
             _shieldCooldownTimer = gameObject.AddComponent<Timer>();
             _shieldCooldown = ConfigurationUtils.ShieldEnemy.ShieldCooldown;
@@ -36,28 +47,72 @@ namespace GameEntities.Ships.Enemies.MediumEnemies
         {
             //This needs to be in the start method because _shield hasn't initialized yet if we were to use it on awake,
             //So the bound.size property would return 0,0,0.
+            ActivateShieldWithoutAnimation();
             Collider2D shieldCollider = _shield.GetComponent<Collider2D>();
-            float shieldColliderRadius = shieldCollider.bounds.size.x * shieldCollider.transform.localScale.x / 2;
-            var protectState = new FindAndProtectEnemiesState(transform, shieldColliderRadius, ShipMotorInput);
+            float shieldColliderRadius = shieldCollider.bounds.size.x / 2;
 
-            ShipMotorStateMachine.AddTransition(_initialShipMotorState, protectState, () => _shield.gameObject.activeInHierarchy);
-            ShipMotorStateMachine.AddTransition(protectState, _initialShipMotorState, () =>
-            {
-                if (!_shield.gameObject.activeInHierarchy)
-                    Debug.Log("Returning to initial state...");
-                return !_shield.gameObject.activeInHierarchy;
-            });
-            DeactivateShield();
+            var protectState = new ProtectEnemiesState(shieldColliderRadius, transform, ShipMotorInput);
+            var moveTowardsClosestEnemyState = new MoveTowardsClosestEnemy(transform, ShipMotorInput);
+            var moveInARandomDirectionState = new MoveInARandomDirectionState(transform, ShipMotorInput);
+
+            ShipMotorStateMachine.AddAnyTransition(_fleeFromPlayerState, () => !IsShieldActivated);
+
+            ShipMotorStateMachine.AddTransition(_fleeFromPlayerState, protectState, () => IsShieldActivated);
+            ShipMotorStateMachine.AddTransition(protectState, moveTowardsClosestEnemyState, () => !protectState.IsThereEnemiesInRadius);
+            ShipMotorStateMachine.AddTransition(moveTowardsClosestEnemyState, moveInARandomDirectionState, () => !moveTowardsClosestEnemyState.AreThereOtherEnemies);
+
+            ShipMotorStateMachine.AddTransition(moveTowardsClosestEnemyState, protectState, () => moveTowardsClosestEnemyState.ReachedTarget);
+
+            DeactivateShieldWithoutAnimation();
+        }
+        private void HandleShieldCooldownTimerFinished() => ActivateShieldWithAnimation();
+        private void HandleShieldBroke() => DeactivateShieldWithAnimation();
+
+        void ActivateShieldWithAnimation()
+        {
+            _shield.gameObject.SetActive(true);
+            CustomMethods.PlayAnimation(_animator, ACTIVATE_SHIELD_ANIMATION);
+            StartCoroutine(ActivateShieldAfterAnimation());
         }
 
-        private void HandleShieldCooldownTimerFinished() => ActivateShield();
-        private void HandleShieldBroke() => DeactivateShield();
+        private IEnumerator ActivateShieldAfterAnimation()
+        {
+            yield return null;
 
-        void ActivateShield() => _shield.gameObject.SetActive(true);
-        void DeactivateShield()
+            float animationDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
+            yield return new WaitForSeconds(animationDuration);
+
+            ActivateShieldWithoutAnimation();
+        }
+
+        void ActivateShieldWithoutAnimation()
+        {
+            _shield.gameObject.SetActive(true);
+            MakeInvincible();
+            CustomMethods.PlayAnimation(_animator, SHIELD_ACTIVE);
+        }
+
+        void DeactivateShieldWithoutAnimation()
         {
             _shield.gameObject.SetActive(false);
+            MakeVincible();
             _shieldCooldownTimer.StartTimer(_shieldCooldown);
+            CustomMethods.PlayAnimation(_animator, IDLE_ANIMATION);
+        }
+        void DeactivateShieldWithAnimation()
+        {
+            CustomMethods.PlayAnimation(_animator, DEACTIVATE_SHIELD_ANIMATION);
+            StartCoroutine(DeactivateShieldAfterAnimation());
+        }
+        IEnumerator DeactivateShieldAfterAnimation()
+        {
+            //wait for a frame so the animator state machine updates
+            yield return null;
+
+            float animationDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
+            yield return new WaitForSeconds(animationDuration);
+
+            DeactivateShieldWithoutAnimation();
         }
 
         protected override ShipMotorSettings CreateMotorSettings() => new ShipMotorSettings(
@@ -67,8 +122,8 @@ namespace GameEntities.Ships.Enemies.MediumEnemies
 
         protected override StateMachine CreateShipMotorStateMachine()
         {
-            _initialShipMotorState = gameObject.AddComponent<FleeFromPlayerState>().Initialize(ShipMotorInput, ConfigurationUtils.ShieldEnemy.RotationCooldown);
-            return new StateMachine(_initialShipMotorState);
+            _fleeFromPlayerState = gameObject.AddComponent<FleeFromPlayerState>().Initialize(ShipMotorInput, ConfigurationUtils.ShieldEnemy.RotationCooldown);
+            return new StateMachine(_fleeFromPlayerState);
         }
 
         protected override (float maxHitpoints, float currentHitpoints, float baseDamage, float damageCooldownDuration) GetInitializationValues() => (
@@ -86,7 +141,7 @@ namespace GameEntities.Ships.Enemies.MediumEnemies
 
             _shieldCooldownTimer.ResetTimer();
             _shield.ResetShield();
-            DeactivateShield();
+            DeactivateShieldWithAnimation();
         }
     }
 }

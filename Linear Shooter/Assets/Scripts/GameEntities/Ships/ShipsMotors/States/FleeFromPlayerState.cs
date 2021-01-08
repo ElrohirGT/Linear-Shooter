@@ -59,7 +59,7 @@ namespace GameEntities.Ships.Motors.States
         {
             //1 is the max thrust and rotation expected.
             _shipMotorInput.UpdateInput(
-                Mathf.Clamp(Vector3.Distance(transform.position, Player.Position), 0.2f, 1.5f),
+                Mathf.Clamp(Vector3.Distance(transform.position, GameManager.PlayerPosition), 0.2f, 1.5f),
                 _currenRotationInput);
         }
 
@@ -67,7 +67,7 @@ namespace GameEntities.Ships.Motors.States
 
         void UpdateRotation()
         {
-            _currenRotationInput = -CustomMethods.CalculateRotationInput(transform, Player.Position, 0.4f);
+            _currenRotationInput = -CustomMethods.CalculateRotationInput(transform, GameManager.PlayerPosition, 0.4f);
 
             Tick();
             _rotationCooldownTimer.StartTimer(_rotationCooldownDuration);

@@ -11,10 +11,12 @@ namespace GameEntities.Shields
 
         void OnTriggerEnter2D(UnityEngine.Collider2D collision)
         {
-            if (collision.CompareTag(TagsConstants.PLAYER))
-                OnEntityTookDamage(collision.GetComponent<AliveEntity>().EntityBaseDamage);
-            else if (collision.CompareTag(TagsConstants.PLAYER_BULLET))
-                OnEntityTookDamage(collision.GetComponent<Bullet>().Damage);
+            if (!collision.CompareTag(TagsConstants.PLAYER_BULLET))
+                return;
+
+            Bullet bullet = collision.GetComponent<Bullet>();
+            OnEntityTookDamage(bullet.Damage);
+            bullet.ReturnToPool();
         }
     }
 }

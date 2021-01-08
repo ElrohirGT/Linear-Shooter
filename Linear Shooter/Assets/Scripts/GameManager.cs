@@ -9,6 +9,8 @@ using Utilities.Constants;
 using System;
 using Spawners.WaveSpawners;
 using System.Text;
+using GameEntities.Ships.Enemies;
+using System.Collections.Generic;
 
 /// <summary>
 /// Controls the state of the game.
@@ -26,7 +28,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Get's the current player of the game.
     /// </summary>
-    Player _player;
+    static Player _player;
 
     /// <summary>
     /// Get's the gameobject where all the spawners are in the game.
@@ -49,10 +51,38 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static Difficulties SelectedDifficulty { get; private set; }
 
+    public static Vector3 PlayerPosition
+    {
+        get
+        {
+            if (_player != null)
+                return _player.Position;
+            return default;
+        }
+    }
+    public static int PlayerHealth
+    {
+        get
+        {
+            if (_player != null)
+                return _player.RemainingHitpoints;
+            return default;
+        }
+    }
+    public static int MinMedalsToUltimate
+    {
+        get
+        {
+            if (_player != null)
+                return _player.MinMedalsToUltimate;
+            return default;
+        }
+    }
+
     /// <summary>
     /// An event that fires once all spawners have to change wave.
     /// </summary>
-    public static Action AllSpawnersFinished;
+    public static event Action AllSpawnersFinished;
 
     /*
     .##...##..######..######..##..##...####...#####....####..
@@ -78,6 +108,21 @@ public class GameManager : MonoBehaviour
         _waveSpawners = _spawnersContainer.GetComponentsInChildren<WaveSpawner>();
         foreach (var waveSpawner in _waveSpawners)
             waveSpawner.WaveFinished += HandleWaveEntitiesDestroyed;
+    }
+
+    /// <summary>
+    /// Checks if the spawner has a listener for the entity died event of the supplied enemy.
+    /// </summary>
+    /// <param name="enemy">The enemy that will check.</param>
+    /// <param name="handlerToCheck">The handler that we want to know if ti already has.</param>
+    /// <returns></returns>
+    protected bool EnemyHasAlreadyAnEventHandler(ShipEnemy enemy, Delegate handlerToCheck)
+    {
+        if (enemy.EntityDied != null)
+            foreach (var existingHandler in enemy.EntityDied.GetInvocationList())
+                if (existingHandler.Equals(handlerToCheck))
+                    return true;
+        return false;
     }
 
     private void HandleWaveEntitiesDestroyed()

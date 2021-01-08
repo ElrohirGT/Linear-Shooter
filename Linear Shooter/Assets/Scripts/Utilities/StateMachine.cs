@@ -20,27 +20,25 @@ namespace Utilities
         /// Gets the current state of the machine.
         /// </summary>
         IState _currentState;
-
         /// <summary>
         /// A dictionary that contains all the registered transitions until this moment.
         /// </summary>
         Dictionary<Type, List<StateTransition>> _transitions = new Dictionary<Type, List<StateTransition>>();
-
         /// <summary>
         /// A list of all the possible transitions that the current state has.
         /// </summary>
         List<StateTransition> _currentStateTransitions = new List<StateTransition>();
-
         /// <summary>
         /// A list of all transitions that don't require any previous state.
         /// </summary>
         List<StateTransition> _anyStateTransitions = new List<StateTransition>();
+        readonly List<StateTransition> EMPTY_TRANSITIONS = new List<StateTransition>();
 
         /// <summary>
         /// Used to cache the list so we don't need to call <c>List.Clear()</c>, 
         /// <a href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.clear?view=net-5.0#remarks">an O(n) operation.</a>
         /// </summary>
-        readonly List<StateTransition> EMPTY_TRANSITIONS = new List<StateTransition>();
+        //readonly List<StateTransition> EMPTY_TRANSITIONS = new List<StateTransition>();
 
         public IState CurrentState => _currentState;
         public IReadOnlyCollection<StateTransition> CurrentStateTransitions => _currentStateTransitions.AsReadOnly();
@@ -86,11 +84,14 @@ namespace Utilities
             _currentState?.OnExit();
             _currentState = state;
 
-            if (!_transitions.TryGetValue(_currentState.GetType(), out _currentStateTransitions))
+            Type currentStateType = _currentState.GetType();
+
+            if (!_transitions.ContainsKey(currentStateType))
                 _currentStateTransitions = EMPTY_TRANSITIONS;
+            else
+                _currentStateTransitions = _transitions[currentStateType];
 
             _currentState.OnEnter();
-
         }
 
         /// <summary>
@@ -105,16 +106,21 @@ namespace Utilities
                 throw new ArgumentNullException(nameof(fromState), "Can't move from a null state to another!");
             if (toState == null)
                 throw new ArgumentNullException(nameof(toState), "Can't move to a null state!");
+            if (condition == null)
+                throw new ArgumentNullException(nameof(condition), "Can't evaluate a null condition!");
 
             Type fromType = fromState.GetType();
 
-            if (!_transitions.TryGetValue(fromType, out _))
+            if (!_transitions.ContainsKey(fromType))
                 _transitions[fromType] = new List<StateTransition>();
 
-            if (fromState.Equals(_currentState))
-                _currentStateTransitions.Add(new StateTransition(toState, condition));
-            else
-                _transitions[fromType].Add(new StateTransition(toState, condition));
+            _transitions[fromType].Add(new StateTransition(toState, condition));
+
+            bool fromStateIsCurrentState = fromState.Equals(_currentState);
+            bool isCurrentStateTransitionsEmpty = _currentStateTransitions.Count == 0;
+
+            if (fromStateIsCurrentState && isCurrentStateTransitionsEmpty)
+                _currentStateTransitions = _transitions[fromType];
         }
 
         /// <summary>
@@ -122,8 +128,15 @@ namespace Utilities
         /// </summary>
         /// <param name="state">The state to go to.</param>
         /// <param name="condition">The condition to change this state.</param>
-        public void AddAnyTransition(IState state, Func<bool> condition) =>
+        public void AddAnyTransition(IState state, Func<bool> condition)
+        {
+            if (state == null)
+                throw new ArgumentNullException(nameof(state), "Can't move to a null state!");
+            if (condition == null)
+                throw new ArgumentNullException(nameof(condition), "Can't evaluate a null condition!");
+
             _anyStateTransitions.Add(new StateTransition(state, condition));
+        }
 
         /// <summary>
         /// Tries getting a transition that is valid.

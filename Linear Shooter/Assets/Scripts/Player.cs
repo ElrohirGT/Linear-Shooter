@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Get's the player's ship.
     /// </summary>
-    static PlayerShip _ship;
+    PlayerShip _ship;
 
     /// <summary>
     /// Get's the player current score.
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Returns the position of the player ship in the game.
     /// </summary>
-    public static Vector3 Position
+    public Vector3 Position
     {
         get
         {
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public static int RemainingLives
+    public int RemainingHitpoints
     {
         get
         {
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
             return default;
         }
     }
-    public static int MedalsForUltimate
+    public int MinMedalsToUltimate
     {
         get
         {

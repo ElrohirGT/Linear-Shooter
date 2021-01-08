@@ -53,8 +53,8 @@ namespace GameEntities.Ships.Enemies.MediumEnemies
 
             var stateMachine = new StateMachine(pursuePlayerState);
 
-            stateMachine.AddTransition(pursuePlayerState, fleeFromPlayerState, () => Vector3.Distance(Player.Position, transform.position) <= ScreenUtils.WorldWidth / 3);
-            stateMachine.AddTransition(fleeFromPlayerState, pursuePlayerState, () => Vector3.Distance(Player.Position, transform.position) >= ScreenUtils.WorldWidth / 2);
+            stateMachine.AddTransition(pursuePlayerState, fleeFromPlayerState, () => Vector3.Distance(GameManager.PlayerPosition, transform.position) <= ScreenUtils.WorldWidth / 3);
+            stateMachine.AddTransition(fleeFromPlayerState, pursuePlayerState, () => Vector3.Distance(GameManager.PlayerPosition, transform.position) >= ScreenUtils.WorldWidth / 2);
 
             return stateMachine;
         }
