@@ -141,7 +141,7 @@ namespace GameEntities.Ships.Enemies.MediumEnemies
 
             _shieldCooldownTimer.ResetTimer();
             _shield.ResetShield();
-            DeactivateShieldWithAnimation();
+            DeactivateShieldWithoutAnimation();
         }
     }
 }

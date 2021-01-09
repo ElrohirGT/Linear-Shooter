@@ -17,12 +17,10 @@ namespace Spawners.WaveSpawners
         /// The current index of in the pattern.
         /// </summary>
         int _currentWaveIndex = -1;
-
         /// <summary>
         /// Get's the checkpoints of this wave generator.
         /// </summary>
         readonly WaveCheckPoint[] _checkpoints;
-
         /// <summary>
         /// Get's the current number of the wave.
         /// </summary>
@@ -60,16 +58,15 @@ namespace Spawners.WaveSpawners
 
             for (int i = _checkpoints.Length - 1; i >= 0; i--)
             {
-                if (_checkpoints[i].WaveNumber == _currentWaveNumber)
-                {
-                    checkPointValue = _checkpoints[i].QuantityToSpawn;
-                    return true;
-                }
+                if (_checkpoints[i].WaveNumber != _currentWaveNumber)
+                    continue;
+
+                checkPointValue = _checkpoints[i].QuantityToSpawn;
+                return true;
             }
 
             return false;
         }
-
         /// <summary>
         /// Get's the next wave from the pattern.
         /// </summary>
@@ -86,7 +83,6 @@ namespace Spawners.WaveSpawners
 
             return (int)_pattern[_currentWaveIndex];
         }
-
         /// <summary>
         /// Grows the pattern by the supplied amount.
         /// </summary>

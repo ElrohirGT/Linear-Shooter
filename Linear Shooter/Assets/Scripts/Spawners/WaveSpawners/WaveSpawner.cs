@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameEntities;
 using GameEntities.Pools;
 using GameEntities.Ships.Enemies;
 using UnityEngine;
@@ -21,49 +22,27 @@ namespace Spawners.WaveSpawners
         .##......######..######..######..#####....####..
         ................................................
         */
-
         protected Vector3 spawnedEntityPosition = new Vector3();
 
-        /// <summary>
-        /// Used to enable or disable the spawner.
-        /// </summary>
-        bool _isActive = false;
-
         #region Timers
-        /// <summary>
-        /// Get's a delay before spawning a new enemy in the current wave.
-        /// </summary>
-        float _spawnCooldownDuration;
+        float _spawnDelay;
+        Timer _spawnDelayTimer;
 
-        /// <summary>
-        /// Get's the timer that controls the delay between spawns of entities in the same wave.
-        /// </summary>
-        Timer _spawnCooldownTimer;
-
-        /// <summary>
-        /// Get's the delay between waves.
-        /// </summary>
-        float _waveCooldownDuration;
-
-        /// <summary>
-        /// Get's the timer that controls the delays between waves.
-        /// </summary>
-        Timer _waveCooldownTimer;
+        float _waveDelay;
+        Timer _waveDelayTimer;
         #endregion
 
         #region Waves
+        WaveGenerator _waveGenerator;
         /// <summary>
         /// Get's the number of remaining entities inside the current wave.
         /// </summary>
-        int _currentWaveEntitiesCount;
+        int _currentWaveEntityCount;
         /// <summary>
         /// Get's the number of entities that the spawner has spawned from the current wave.
+        /// Not necessarily the same value as <c>_currentWaveEntityCount</c>.
         /// </summary>
         int _currentWaveSpawnedEntities;
-        /// <summary>
-        /// Creates all the waves that this spawner will spawn.
-        /// </summary>
-        WaveGenerator _waveGenerator;
         /// <summary>
         /// Get's how many entities this wave has needs to spawn.
         /// </summary>
@@ -73,20 +52,14 @@ namespace Spawners.WaveSpawners
         #region Support to spawn by probabilities
         [SerializeField]
         GameObject _pools;
+
         protected Dictionary<IBasePool<ShipEnemy>, float> ProbabilitiesByPools { get; private set; }
         #endregion
 
-        /*
-        .######..##..##..######..##..##..######...####..
-        .##......##..##..##......###.##....##....##.....
-        .####....##..##..####....##.###....##.....####..
-        .##.......####...##......##..##....##........##.
-        .######....##....######..##..##....##.....####..
-        ................................................
-        */
-        /// <summary>
-        /// An event that fires when the current wave has finished.
-        /// </summary>
+        bool SpawnerFinishedSpawningEnemies => _currentWaveSpawnedEntities >= _currentWaveTotalEntitiesToSpawn;
+
+        bool AllCurrentWaveEntitiesAreDead => _currentWaveEntityCount <= 0;
+
         public event Action WaveFinished;
 
         /*
@@ -97,14 +70,23 @@ namespace Spawners.WaveSpawners
         .##...##..######....##....##..##...####...#####....####..
         .........................................................
         */
+        #region Configuration
+        protected abstract Dictionary<IBasePool<ShipEnemy>, float> ConstructPoolsAndProbabilitiesDictionary(IBasePool<ShipEnemy>[] poolsGameObject);
+        protected abstract float[] GetWaveGeneratorPattern();
+        protected abstract float GetWaveGeneratorGrowthValue();
+        protected abstract WaveCheckPoint[] GetWaveGeneratorCheckpoints();
+        protected abstract float GetSpawnCooldown();
+        protected abstract float GetWaveCooldown();
+        #endregion
+
         #region Unity
         void Awake()
         {
-            _spawnCooldownTimer = gameObject.AddComponent<Timer>();
-            _spawnCooldownTimer.Finished += HandleDelayBetweenSpawnsTimerFinished;
+            _spawnDelayTimer = gameObject.AddComponent<Timer>();
+            _spawnDelayTimer.Finished += HandleSpawnDelayTimerFinished;
 
-            _waveCooldownTimer = gameObject.AddComponent<Timer>();
-            _waveCooldownTimer.Finished += HandleDelayBetweenWavesTimerFinished;
+            _waveDelayTimer = gameObject.AddComponent<Timer>();
+            _waveDelayTimer.Finished += HandleWaveDelayTimerFinished;
 
             GameManager.AllSpawnersFinished += HandleNextWave;
         }
@@ -117,15 +99,13 @@ namespace Spawners.WaveSpawners
             WaveCheckPoint[] checkPoints = GetWaveGeneratorCheckpoints();
 
             _waveGenerator = new WaveGenerator(growthValue, pattern, checkPoints);
-            _currentWaveTotalEntitiesToSpawn = _waveGenerator.GetWave();
 
-            _spawnCooldownDuration = GetSpawnCooldown();
-            _waveCooldownDuration = GetWaveCooldown();
+            _spawnDelay = GetSpawnCooldown();
+            _waveDelay = GetWaveCooldown();
 
             ProbabilitiesByPools = ConstructPoolsAndProbabilitiesDictionary(GetPoolReferencesFromGameObject());
-            _isActive = true;
 
-            SpawnWave();
+            HandleWaveDelayTimerFinished();
         }
 
         IBasePool<ShipEnemy>[] GetPoolReferencesFromGameObject()
@@ -147,72 +127,64 @@ namespace Spawners.WaveSpawners
             }
             return poolsReferences.ToArray();
         }
-
-        protected abstract Dictionary<IBasePool<ShipEnemy>, float> ConstructPoolsAndProbabilitiesDictionary(IBasePool<ShipEnemy>[] poolsGameObject);
-        protected abstract float[] GetWaveGeneratorPattern();
-        protected abstract float GetWaveGeneratorGrowthValue();
-        protected abstract WaveCheckPoint[] GetWaveGeneratorCheckpoints();
-        protected abstract float GetSpawnCooldown();
-        protected abstract float GetWaveCooldown();
         #endregion
 
-        void HandleNextWave()
+        void HandleNextWave() => _waveDelayTimer.StartTimer(_waveDelay);
+
+        void HandleWaveDelayTimerFinished()
         {
-            _currentWaveTotalEntitiesToSpawn = _waveGenerator.GetWave();
-            _currentWaveEntitiesCount = 0;
-            _currentWaveSpawnedEntities = 0;
-            _waveCooldownTimer.StartTimer(_waveCooldownDuration);
+            UpdateInfoFromNextWave();
+            HandleSpawnDelayTimerFinished();
         }
 
-        /// <summary>
-        /// Handles the delay between waves of entities.
-        /// </summary>
-        void HandleDelayBetweenWavesTimerFinished() => SpawnWave();
-        /// <summary>
-        /// Start's the spawns cicle.
-        /// </summary>
-        void SpawnWave() => HandleDelayBetweenSpawnsTimerFinished();
-        /// <summary>
-        /// Handles the delay between the spawn of every enemy in the same wave.
-        /// </summary>
-        void HandleDelayBetweenSpawnsTimerFinished()
+        void UpdateInfoFromNextWave()
         {
-            if (_currentWaveTotalEntitiesToSpawn == 0)
+            _currentWaveEntityCount = 0;
+            _currentWaveSpawnedEntities = 0;
+            _currentWaveTotalEntitiesToSpawn = _waveGenerator.GetWave();
+        }
+
+        void HandleSpawnDelayTimerFinished()
+        {
+            if (AllCurrentWaveEntitiesAreDead && SpawnerFinishedSpawningEnemies)
             {
                 OnCurrentWaveFinished();
                 return;
             }
 
-            bool spawnerFinishedSpawningEnemies = _currentWaveSpawnedEntities >= _currentWaveTotalEntitiesToSpawn;
-            if (spawnerFinishedSpawningEnemies)
+            if (SpawnerFinishedSpawningEnemies)
                 return;
 
-            if (!_isActive)
-                return;
-
-            Spawn();
+            AliveEntity spawnedEntity = Spawn();
+            //We need to cast it to Action so the method group is converted to a Delegate.
+            if (!EntityHasAlreadyAnEventHandler(spawnedEntity, (Action)HandleEntityDied))
+                spawnedEntity.EntityDied += HandleEntityDied;
 
             _currentWaveSpawnedEntities++;
-            _currentWaveEntitiesCount++;
-            _spawnCooldownTimer.StartTimer(_spawnCooldownDuration);
+            _currentWaveEntityCount++;
+            _spawnDelayTimer.StartTimer(_spawnDelay);
         }
-        /// <summary>
-        /// Updates the current entity count and possibly announces the wave has ended.
-        /// </summary>
+
+        protected bool EntityHasAlreadyAnEventHandler(AliveEntity entity, Delegate handlerToCheck)
+        {
+            if (entity.EntityDied != null)
+                foreach (var existingHandler in entity.EntityDied.GetInvocationList())
+                    if (existingHandler.Equals(handlerToCheck))
+                        return true;
+            return false;
+        }
         protected void HandleEntityDied()
         {
-            _currentWaveEntitiesCount--;
+            _currentWaveEntityCount--;
 
-            if (_currentWaveEntitiesCount <= 0)
+            if (AllCurrentWaveEntitiesAreDead)
                 OnCurrentWaveFinished();
         }
-        /// <summary>
-        /// Invokes the wave finished event.
-        /// </summary>
+
         private void OnCurrentWaveFinished() => WaveFinished?.Invoke();
         /// <summary>
         /// A method that spawns one entity of the wave.
         /// </summary>
-        protected abstract void Spawn();
+        protected abstract AliveEntity Spawn();
     }
 }

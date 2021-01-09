@@ -20,7 +20,7 @@ namespace Spawners.WaveSpawners
         protected override float GetWaveCooldown() => ConfigurationUtils.EasyEnemiesSpawnerConfig.WaveCooldownDuration;
 
         /// <summary>
-        /// Set's the <c>_spawnedEntityPosition</c> vector to a
+        /// Set's the <c>spawnedEntityPosition</c> vector to a
         /// random world point that is on the borders of the world.
         /// </summary>
         protected void GetRandomWorldPointInBorder()
@@ -37,33 +37,14 @@ namespace Spawners.WaveSpawners
             spawnedEntityPosition.x = UnityEngine.Random.Range(0, 2) > 0 ? ScreenUtils.WorldLeft : ScreenUtils.WorldRight;
         }
 
-        /// <summary>
-        /// Checks if the spawner has a listener for the entity died event of the supplied enemy.
-        /// </summary>
-        /// <param name="enemy">The enemy that will check.</param>
-        /// <param name="handlerToCheck">The handler that we want to know if ti already has.</param>
-        /// <returns></returns>
-        protected bool EnemyHasAlreadyAnEventHandler(AliveEntity enemy, Delegate handlerToCheck)
-        {
-            if (enemy.EntityDied != null)
-                foreach (var existingHandler in enemy.EntityDied.GetInvocationList())
-                    if (existingHandler.Equals(handlerToCheck))
-                        return true;
-            return false;
-        }
-        /// <summary>
-        /// Spawn the entities in random locations around the scene.
-        /// </summary>
-        protected override void Spawn()
+        protected override AliveEntity Spawn()
         {
             ShipEnemy newEnemy = GetEnemyFromPools();
 
             GetRandomWorldPointInBorder();
             newEnemy.transform.position = spawnedEntityPosition;
 
-            //We need to cast it to Action so the method groupd is converted to a Delegate.
-            if (!EnemyHasAlreadyAnEventHandler(newEnemy, (Action)HandleEntityDied))
-                newEnemy.EntityDied += HandleEntityDied;
+            return newEnemy;
         }
 
         /// <summary>
